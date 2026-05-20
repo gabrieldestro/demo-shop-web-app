@@ -8,7 +8,7 @@ using Core.Entities;
 using Core.Interfaces;
 using StackExchange.Redis;
 
-namespace Infrastructure
+namespace Infrastructure.Services
 {
     public class CartService(IConnectionMultiplexer redis) : ICartService
     {

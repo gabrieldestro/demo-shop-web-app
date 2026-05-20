@@ -2,6 +2,12 @@ How to Debug?
 
 
 
+Angular: ng serve
+
+
+
+Backend:
+
 Start the app
 
 Execute the command to create the DB:
