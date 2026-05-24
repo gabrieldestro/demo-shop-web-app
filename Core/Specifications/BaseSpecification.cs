@@ -17,6 +17,8 @@ namespace Core.Specifications
         public Expression<Func<T, object>>? OrderBy { get; private set; }
 
         public Expression<Func<T, object>>? OrderByDescending { get; private set; }
+        public List<Expression<Func<T, object>>> Includes { get; } = [];
+        public List<string> IncludeStrings { get; } = []; // For ThenInclude
 
         public bool IsDistinct { get; private set; }
         public int Take { get; private set; }
@@ -32,11 +34,15 @@ namespace Core.Specifications
 
             return query;
         }
-        protected void ApplyPaging(int skip, int take)
+
+        protected void AddInclude(Expression<Func<T, object>> includeExpression)
         {
-            Skip = skip;
-            Take = take;
-            IsPagingEnabled = true;
+            Includes.Add(includeExpression);
+        }
+
+        protected void AddInclude(string includeString)
+        {
+            IncludeStrings.Add(includeString); // For ThenInclude
         }
 
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
@@ -52,6 +58,13 @@ namespace Core.Specifications
         protected void ApplyDistinct()
         {
             IsDistinct = true;
+        }
+
+        protected void ApplyPaging(int skip, int take)
+        {
+            Skip = skip;
+            Take = take;
+            IsPagingEnabled = true;
         }
     }
 

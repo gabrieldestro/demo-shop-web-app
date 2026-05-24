@@ -37,11 +37,6 @@ namespace Infrastructure.Data
             context.Set<T>().Remove(entity);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
-        }
-
         public bool Exists(int id)
         {
             return context.Set<T>().Any(x => x.Id == id);
