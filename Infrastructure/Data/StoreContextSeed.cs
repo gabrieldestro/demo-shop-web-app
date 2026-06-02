@@ -1,39 +1,51 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System;
+using System.Reflection;
+using System.Text.Json;
+using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { OrderParams } from '../../shared/models/orderParams';
-import { Order } from '../../shared/models/order';
-import { Pagination } from '../../shared/models/pagination';
+namespace Infrastructure.Data;
 
-@Injectable({
-providedIn: 'root'
-})
-export class AdminService
+public class StoreContextSeed
 {
-    baseUrl = environment.baseUrl;
-  private http = inject(HttpClient);
-
-    getOrders(orderParams: OrderParams)
+    public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager)
     {
-        let params = new HttpParams();
-        if (orderParams.filter && orderParams.filter !== 'All')
+        if (!userManager.Users.Any(x => x.UserName == "admin@test.com"))
         {
-      params = params.append('status', orderParams.filter);
-        } 
-    params = params.append('pageSize', orderParams.pageSize);
-    params = params.append('pageIndex', orderParams.pageNumber);
-        return this.http.get<Pagination<Order>>(this.baseUrl + 'admin/orders', {params});
-    }
+            var user = new AppUser
+            {
+                UserName = "admin@test.com",
+                Email = "admin@test.com"
+            };
 
-    getOrder(id: number)
-    {
-        return this.http.get<Order>(this.baseUrl + 'admin/orders/' + id);
-    }
+            await userManager.CreateAsync(user, "admin");
+            await userManager.AddToRoleAsync(user, "Admin");
+        }
 
-    refundOrder(id: number)
-    {
-        return this.http.post<Order>(this.baseUrl + 'admin/orders/refund/' + id, { });
+        var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        if (!context.Products.Any())
+        {
+            var productsData = await File.ReadAllTextAsync(path + @"/Data/SeedData/products.json");
+            var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+
+            if (products == null) return;
+
+            context.Products.AddRange(products);
+
+            await context.SaveChangesAsync();
+        }
+
+        if (!context.DeliveryMethods.Any())
+        {
+            var dmData = await File.ReadAllTextAsync(path + @"/Data/SeedData/delivery.json");
+            var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+
+            if (methods == null) return;
+
+            context.DeliveryMethods.AddRange(methods);
+
+            await context.SaveChangesAsync();
+        }
     }
 }
