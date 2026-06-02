@@ -4,8 +4,10 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +31,10 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     return ConnectionMultiplexer.Connect(configuation);
 });
 builder.Services.AddSingleton<ICartService, CartService>();
+
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddSignalR();
 
@@ -61,8 +65,9 @@ try
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<StoreContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
-    await StoreContextSeed.SeedAsync(context);
+    await StoreContextSeed.SeedAsync(context, userManager);
 }
 catch (Exception e)
 {

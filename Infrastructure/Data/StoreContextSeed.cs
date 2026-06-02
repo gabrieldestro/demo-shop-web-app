@@ -1,38 +1,39 @@
-﻿using System;
-using System.Reflection;
-using System.Text.Json;
-using Core.Entities;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Infrastructure.Data;
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { OrderParams } from '../../shared/models/orderParams';
+import { Order } from '../../shared/models/order';
+import { Pagination } from '../../shared/models/pagination';
 
-public class StoreContextSeed
+@Injectable({
+providedIn: 'root'
+})
+export class AdminService
 {
-    public static async Task SeedAsync(StoreContext context)
+    baseUrl = environment.baseUrl;
+  private http = inject(HttpClient);
+
+    getOrders(orderParams: OrderParams)
     {
-        var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-        if (!context.Products.Any())
+        let params = new HttpParams();
+        if (orderParams.filter && orderParams.filter !== 'All')
         {
-            var productsData = await File.ReadAllTextAsync(path + @"/Data/SeedData/products.json");
-            var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+      params = params.append('status', orderParams.filter);
+        } 
+    params = params.append('pageSize', orderParams.pageSize);
+    params = params.append('pageIndex', orderParams.pageNumber);
+        return this.http.get<Pagination<Order>>(this.baseUrl + 'admin/orders', {params});
+    }
 
-            if (products == null) return;
+    getOrder(id: number)
+    {
+        return this.http.get<Order>(this.baseUrl + 'admin/orders/' + id);
+    }
 
-            context.Products.AddRange(products);
-
-            await context.SaveChangesAsync();
-        }
-
-        if (!context.DeliveryMethods.Any())
-        {
-            var dmData = await File.ReadAllTextAsync(path + @"/Data/SeedData/delivery.json");
-            var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
-
-            if (methods == null) return;
-
-            context.DeliveryMethods.AddRange(methods);
-
-            await context.SaveChangesAsync();
-        }
+    refundOrder(id: number)
+    {
+        return this.http.post<Order>(this.baseUrl + 'admin/orders/refund/' + id, { });
     }
 }
