@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Text.Json;
 using Core.Entities;
@@ -8,8 +8,13 @@ namespace Infrastructure.Data;
 
 public class StoreContextSeed
 {
-    public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager)
+    public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
     {
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+
         if (!userManager.Users.Any(x => x.UserName == "admin@test.com"))
         {
             var user = new AppUser
@@ -18,8 +23,11 @@ public class StoreContextSeed
                 Email = "admin@test.com"
             };
 
-            await userManager.CreateAsync(user, "admin");
-            await userManager.AddToRoleAsync(user, "Admin");
+            var result = await userManager.CreateAsync(user, "Pa$$w0rd");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Admin");
+            }
         }
 
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
