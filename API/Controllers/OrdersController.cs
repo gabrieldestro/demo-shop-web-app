@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+using API.DTOs;
 using API.Extensions;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
@@ -6,11 +6,12 @@ using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace API.Controllers
 {
     [Authorize]
-    public class OrdersController(ICartService cartService, IUnitOfWork unit) : BaseApiController
+    public class OrdersController(ICartService cartService, IUnitOfWork unit, IConfiguration config) : BaseApiController
     {
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderDto orderDto)
@@ -59,7 +60,8 @@ namespace API.Controllers
                 Subtotal = items.Sum(x => x.Price * x.Quantity),
                 PaymentSummary = orderDto.PaymentSummary,
                 PaymentIntentId = cart.PaymentIntentId,
-                BuyerEmail = email
+                BuyerEmail = email,
+                Status = bool.TryParse(config["StripeSettings:MockStripe"], out bool isMock) && isMock ? OrderStatus.PaymentReceived : OrderStatus.Pending
             };
 
             unit.Repository<Order>().Add(order);

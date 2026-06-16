@@ -1,4 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { OrderSummaryComponent } from "../../shared/components/order-summary/order-summary.component";
 import { MatStepper, MatStepperModule } from "@angular/material/stepper";
 import { MatButton } from '@angular/material/button';
@@ -45,11 +46,18 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   paymentElement?: StripePaymentElement;
   saveAddress = false;
   completionStatus = signal<{ address: boolean, card: boolean, delivery: boolean }>(
-    { address: false, card: false, delivery: false });
+    { address: true, card: true, delivery: false });
   confirmationToken?: ConfirmationToken;
   loading = false;
 
+  mockStripe = environment.mockStripe;
+
   async ngOnInit() {
+    if (this.mockStripe) {
+      this.completionStatus.set({ address: true, card: true, delivery: false });
+      return;
+    }
+
     try {
       this.addressElement = await this.stripeService.createAddressElement();
       this.addressElement.mount('#address-element');
@@ -86,6 +94,30 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   async getConfirmationToken() {
     try {
+      if (this.mockStripe) {
+        this.confirmationToken = {
+          payment_method_preview: {
+            card: {
+              last4: '4242',
+              brand: 'visa',
+              exp_month: 12,
+              exp_year: 2030
+            }
+          },
+          shipping: {
+            address: {
+              line1: '123 Test St',
+              city: 'Test City',
+              state: 'Test State',
+              country: 'US',
+              postal_code: '12345'
+            },
+            name: 'Test User'
+          }
+        } as any;
+        return;
+      }
+
       if (Object.values(this.completionStatus()).every(status => status === true)) {
         const result = await this.stripeService.createConfirmationToken();
         if (result.error) throw new Error(result.error.message)
@@ -115,6 +147,20 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   async confirmPayment(stepper: MatStepper) {
     this.loading = true;
     try {
+      if (this.mockStripe) {
+        const order = await this.createOrderModel();
+        const orderResult = await firstValueFrom(this.orderService.createOrder(order));
+        if (orderResult) {
+          this.orderService.orderComplete = true;
+          this.cartService.deleteCart();
+          this.cartService.selectedDelivery.set(null);
+          this.router.navigateByUrl('/checkout/success');
+        } else {
+          throw new Error('Order creation failed');
+        }
+        return;
+      }
+
       if (this.confirmationToken) {
         const result = await this.stripeService.confirmPayment(this.confirmationToken);
 
@@ -145,8 +191,28 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
   private async createOrderModel(): Promise<OrderToCreate> {
     const cart = this.cartService.cart();
-    const shippingAddress = await this.getAddressFromStripeAddress() as ShippingAddress;
-    const card = this.confirmationToken?.payment_method_preview.card;
+    let shippingAddress: ShippingAddress;
+    let card: any;
+
+    if (this.mockStripe) {
+      shippingAddress = {
+        name: 'Test User',
+        line1: '123 Test St',
+        city: 'Test City',
+        state: 'Test State',
+        country: 'US',
+        postalCode: '12345'
+      };
+      card = {
+        last4: '4242',
+        brand: 'visa',
+        exp_month: 12,
+        exp_year: 2030
+      };
+    } else {
+      shippingAddress = await this.getAddressFromStripeAddress() as ShippingAddress;
+      card = this.confirmationToken?.payment_method_preview.card;
+    }
 
     if (!cart?.id || !cart.deliveryMethodId || !card || !shippingAddress)
       throw new Error('Problem creating order');

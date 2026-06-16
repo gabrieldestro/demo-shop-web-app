@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+using Core.Entities;
 using Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Stripe;
@@ -9,6 +9,7 @@ public class PaymentService : IPaymentService
 {
     private readonly ICartService cartService;
     private readonly IUnitOfWork unit;
+    private readonly IConfiguration _config;
 
     public PaymentService(IConfiguration config, ICartService cartService,
         IUnitOfWork unit)
@@ -16,6 +17,7 @@ public class PaymentService : IPaymentService
         StripeConfiguration.ApiKey = config["StripeSettings:SecretKey"];
         this.cartService = cartService;
         this.unit = unit;
+        _config = config;
     }
 
     public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
@@ -40,6 +42,11 @@ public class PaymentService : IPaymentService
 
     public async Task<string> RefundPayment(string paymentIntentId)
     {
+        if (bool.TryParse(_config["StripeSettings:MockStripe"], out bool isMock) && isMock)
+        {
+            return await Task.FromResult("succeeded");
+        }
+
         var refundOptions = new RefundCreateOptions
         {
             PaymentIntent = paymentIntentId
@@ -54,6 +61,16 @@ public class PaymentService : IPaymentService
     private async Task CreateUpdatePaymentIntentAsync(ShoppingCart cart,
         long total)
     {
+        if (bool.TryParse(_config["StripeSettings:MockStripe"], out bool isMock) && isMock)
+        {
+            if (string.IsNullOrEmpty(cart.PaymentIntentId))
+            {
+                cart.PaymentIntentId = "pi_mock_" + Guid.NewGuid().ToString();
+                cart.ClientSecret = "mock_client_secret_" + Guid.NewGuid().ToString();
+            }
+            return;
+        }
+
         var service = new PaymentIntentService();
 
         if (string.IsNullOrEmpty(cart.PaymentIntentId))

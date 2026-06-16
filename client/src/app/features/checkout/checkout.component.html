@@ -3,7 +3,15 @@
         <mat-stepper (selectionChange)="onStepChange($event)" [linear]="true"
             #stepper class="bg-white border border-gray-200 shadow-sm">
             <mat-step label="Address" [completed]="completionStatus().address">
-                <div id="address-element"></div>
+                @if (mockStripe) {
+                    <div class="p-4 border rounded bg-gray-50 mb-4">
+                        <p class="text-sm text-gray-600 mb-2">Mock Mode Active: Dummy address will be used.</p>
+                        <input type="text" disabled value="123 Test St" class="block w-full border-gray-300 rounded-md shadow-sm mb-2" />
+                        <input type="text" disabled value="Test City, Test State, US" class="block w-full border-gray-300 rounded-md shadow-sm" />
+                    </div>
+                } @else {
+                    <div id="address-element"></div>
+                }
                 <div class="flex justify-end mt-1">
                     <mat-checkbox [checked]="saveAddress"
                         (change)="onSaveAddressCheckboxChange($event)">Save as
@@ -27,7 +35,18 @@
                 </div>
             </mat-step>
             <mat-step label="Payment" [completed]="completionStatus().card">
-                <div id="payment-element"></div>
+                @if (mockStripe) {
+                    <div class="p-4 border rounded bg-gray-50 mb-4">
+                        <p class="text-sm text-gray-600 mb-2">Mock Mode Active: Dummy credit card will be used.</p>
+                        <input type="text" disabled value="**** **** **** 4242" class="block w-full border-gray-300 rounded-md shadow-sm mb-2" />
+                        <div class="flex gap-2">
+                            <input type="text" disabled value="12/30" class="block w-1/2 border-gray-300 rounded-md shadow-sm" />
+                            <input type="text" disabled value="123" class="block w-1/2 border-gray-300 rounded-md shadow-sm" />
+                        </div>
+                    </div>
+                } @else {
+                    <div id="payment-element"></div>
+                }
                 <div class="flex justify-between mt-6">
                     <button matStepperPrevious mat-stroked-button>Back</button>
                     <button [disabled]="!completionStatus().card" matStepperNext
