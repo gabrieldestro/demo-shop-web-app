@@ -1,22 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import { MatCard } from '@angular/material/card';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
-import { JsonPipe } from '@angular/common';
 import { TextInputComponent } from "../../../shared/component/text-input/text-input.component";
 
 @Component({
   selector: 'app-register',
   imports: [
-    MatCard,
     ReactiveFormsModule,
-    MatButton,
-    TextInputComponent
+    TextInputComponent,
+    RouterLink
 ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

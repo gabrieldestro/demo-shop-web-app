@@ -8,7 +8,7 @@
     </div>
 
     <!-- Form body -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="px-8 py-8 space-y-5">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="px-10 py-8 space-y-5">
 
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
         <mat-label>Email address</mat-label>
@@ -20,10 +20,12 @@
         <input matInput formControlName="password" type="password" placeholder="Password" />
       </mat-form-field>
 
-      <button type="submit"
-        class="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-bold text-base py-3 rounded-xl mt-2">
-        Sign in
-      </button>
+      <div class="px-4">
+        <button type="submit"
+          class="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-bold text-base py-3 rounded-xl">
+          Sign in
+        </button>
+      </div>
 
       <p class="text-center text-sm text-gray-500 pt-2">
         Don't have an account?
