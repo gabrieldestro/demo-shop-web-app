@@ -32,4 +32,10 @@ export class FiltersDialogComponent {
       selectedTypes: this.selectedTypes
     });
   }
+
+  clearFilters() {
+    this.selectedBrands = [];
+    this.selectedTypes = [];
+    this.applyFilters();
+  }
 }

@@ -2,10 +2,59 @@
 
 // Customize the entire app. Change :root to your selector if you want to scope the styles.
 :root {
-  @include mat.button-overrides((filled-container-shape: '6px',
-      outlined-container-shape: '6px'
-    ));
-  @include mat.badge-overrides((background-color: blue));
+  @include mat.button-overrides((
+      filled-container-shape: '6px',
+      outlined-container-shape: '6px',
+      filled-container-color: #f97316, // Orange
+      filled-label-text-color: #ffffff,
+  ));
+  @include mat.badge-overrides((background-color: #f97316)); // Orange
+
+  // Add primary color overrides for other material components
+  --mdc-theme-primary: #f97316;
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #000000;
+}
+
+// Fix buttons hover and active states that Tailwind might remove
+.mat-mdc-unelevated-button:hover,
+.mat-mdc-raised-button:hover {
+  filter: brightness(0.9);
+  transition: all 0.2s;
+}
+
+.mat-mdc-unelevated-button:active,
+.mat-mdc-raised-button:active {
+  filter: brightness(0.8);
+  transform: scale(0.98);
+}
+
+// Fix stroked buttons (Tailwind strips border styles)
+.mdc-button--outlined {
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+.mdc-button--outlined:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+// Checkout stepper colors (Orange/Black)
+.mat-step-icon {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+
+.mat-step-icon-state-number,
+.mat-step-icon-state-edit {
+  color: white !important;
+}
+
+.mat-step-header .mat-step-label.mat-step-label-active {
+  color: #000000 !important;
+  font-weight: 600 !important;
 }
 
 .match-input-height {

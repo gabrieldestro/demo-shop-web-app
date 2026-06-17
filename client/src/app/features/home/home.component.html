@@ -1,18 +1,109 @@
-<div class="max-w-screen-2xl mx-auto px-4 mt-32">
-    <div class="flex flex-col items-center py-16 justify-center mt-20 rounded-2xl 
-        shadow-xl relative">
-        <img class="absolute inset-0 w-full h-full object-cover rounded-2xl"
-            src="../images/hero1.jpg" alt="ski resort image">
-        <div class="flex flex-col p-8 rounded-2xl items-center relative">
-            <h1 class="my-6 font-extrabold text-white text-6xl">
-                Welcome to SkiNet!
-            </h1>
-            <button class="bg-gradient-to-r from-blue-600 to-cyan-500 font-semibold 
-                    text-2xl text-white 
-                    rounded-2xl px-8 py-4 border-2 border-transparent mt-8"
-                routerLink="/shop">
-                Go to shop
-            </button>
-        </div>
+<!-- Hero Section -->
+<section class="bg-black text-white py-24 px-4">
+  <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
+    <div class="flex-1">
+      <span class="inline-block bg-orange-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-6">
+        New Season
+      </span>
+      <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+        Gear Up.<br>
+        <span class="text-orange-500">Ski Hard.</span>
+      </h1>
+      <p class="text-gray-400 text-lg leading-relaxed mb-10 max-w-lg">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
+      <div class="flex gap-4">
+        <button routerLink="/shop"
+          class="bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-bold text-lg px-8 py-4 rounded-xl">
+          Shop Now
+        </button>
+        <button routerLink="/shop"
+          class="border border-gray-600 hover:border-orange-500 hover:text-orange-400 transition-all text-gray-300 font-semibold text-lg px-8 py-4 rounded-xl">
+          View All
+        </button>
+      </div>
     </div>
-</div>
+
+    <!-- Stats -->
+    <div class="flex-shrink-0 grid grid-cols-2 gap-6">
+      <div class="bg-gray-900 rounded-2xl p-6 text-center">
+        <p class="text-4xl font-black text-orange-500">200+</p>
+        <p class="text-gray-400 text-sm mt-1">Products</p>
+      </div>
+      <div class="bg-gray-900 rounded-2xl p-6 text-center">
+        <p class="text-4xl font-black text-orange-500">50+</p>
+        <p class="text-gray-400 text-sm mt-1">Brands</p>
+      </div>
+      <div class="bg-gray-900 rounded-2xl p-6 text-center">
+        <p class="text-4xl font-black text-orange-500">10k+</p>
+        <p class="text-gray-400 text-sm mt-1">Customers</p>
+      </div>
+      <div class="bg-gray-900 rounded-2xl p-6 text-center">
+        <p class="text-4xl font-black text-orange-500">★ 4.9</p>
+        <p class="text-gray-400 text-sm mt-1">Rating</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Strip -->
+<section class="bg-orange-500 text-white py-5">
+  <div class="max-w-5xl mx-auto flex flex-wrap justify-around gap-4 px-4">
+    <div class="flex items-center gap-2">
+      <mat-icon>local_shipping</mat-icon>
+      <span class="font-semibold">Free Shipping over $100</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <mat-icon>verified</mat-icon>
+      <span class="font-semibold">Authentic Gear</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <mat-icon>replay</mat-icon>
+      <span class="font-semibold">30-Day Returns</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <mat-icon>support_agent</mat-icon>
+      <span class="font-semibold">Expert Support</span>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-20 px-4 bg-gray-50">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <p class="text-orange-500 font-bold uppercase tracking-widest text-sm mb-2">Hand-picked</p>
+        <h2 class="text-4xl font-extrabold text-gray-900">Featured Products</h2>
+      </div>
+      <a routerLink="/shop" class="text-orange-500 font-semibold hover:underline flex items-center gap-1">
+        See all <mat-icon class="text-base">arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      @for (product of featuredProducts; track product.id) {
+        <app-product-item [product]="product"></app-product-item>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- About/CTA Section -->
+<section class="bg-black text-white py-20 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-4xl font-extrabold mb-6">
+      Why choose <span class="text-orange-500">SkiNet?</span>
+    </h2>
+    <p class="text-gray-400 text-lg leading-relaxed mb-10">
+      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      We bring you the finest ski gear from the world's top brands, curated for performance and style.
+    </p>
+    <button routerLink="/shop"
+      class="bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-bold text-xl px-12 py-5 rounded-2xl">
+      Start Shopping
+    </button>
+  </div>
+</section>
