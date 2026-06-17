@@ -1,62 +1,64 @@
 @if (products && products.count > 0) {
-<div class="flex flex-col gap-3">
-  <div class="flex justify-between">
-    <mat-paginator class="bg-white" (page)="handlePageEvent($event)"
+
+
+<!-- Toolbar -->
+<div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-6 bg-white rounded-2xl shadow-sm border border-gray-100 px-4 py-3">
+
+  <!-- Search -->
+  <form #searchForm="ngForm"
+      (ngSubmit)="onSearchChange()"
+      class="relative flex items-center w-full max-w-sm">
+    <mat-icon class="absolute left-3 text-gray-400 pointer-events-none">search</mat-icon>
+    <input
+        type="search"
+        class="block w-full pl-10 pr-4 py-2.5 text-sm text-gray-900 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400 transition"
+        placeholder="Search products..."
+        name="search"
+        [(ngModel)]="shopParams.search" />
+  </form>
+
+  <!-- Actions: Sort + Filter + Paginator -->
+  <div class="flex items-center gap-2 flex-wrap justify-end w-full sm:w-auto">
+    <button class="match-input-height flex items-center gap-1 border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium text-gray-700 hover:border-orange-400 hover:text-orange-500 transition bg-white" mat-stroked-button (click)="openFiltersDialog()">
+      <mat-icon class="text-base">filter_list</mat-icon>
+      Filters
+    </button>
+    <button class="match-input-height flex items-center gap-1 border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium text-gray-700 hover:border-orange-400 hover:text-orange-500 transition bg-white" mat-stroked-button [matMenuTriggerFor]="sortMenu">
+      <mat-icon class="text-base">swap_vert</mat-icon>
+      Sort
+    </button>
+    <mat-paginator class="rounded-xl bg-transparent border-0 shadow-none" (page)="handlePageEvent($event)"
         [length]="products.count" [pageSize]="shopParams.pageSize"
         [showFirstLastButtons]="true" [pageSizeOptions]="pageSizeOptions"
         [pageIndex]="shopParams.pageNumber - 1" aria-label="select page">
     </mat-paginator>
-
-    <form #searchForm="ngForm" 
-        (ngSubmit)="onSearchChange()"
-        class="relative flex items-center w-full max-w-md mx-4">
-      <input 
-          type="search"
-          class="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Search" 
-          name="search"
-          [(ngModel)]="shopParams.search" />
-      <button mat-icon-button type="submit"
-          class="absolute inset-y-0 right-8 top-2 flex items-center pl-3">
-        <mat-icon class="text-gray-500">search</mat-icon>
-      </button>
-    </form>
-
-    <div class="flex gap-3">
-      <button class="match-input-height" mat-stroked-button (click)="openFiltersDialog()">
-        <mat-icon>filter_list</mat-icon>
-        Filters
-      </button>
-      <button class="match-input-height" mat-stroked-button [matMenuTriggerFor]="sortMenu">
-        <mat-icon>swap_vert</mat-icon>
-        Sort
-      </button>
-    </div>
-
   </div>
 
-  <div class="grid grid-cols-5 gap-4">
-    @for (product of products.data; track product.id) {
+</div>
+
+<!-- Products Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+  @for (product of products.data; track product.id) {
     <app-product-item [product]="product"></app-product-item>
-    }
-  </div>
+  }
 </div>
 
 <mat-menu #sortMenu="matMenu">
   <mat-selection-list [multiple]="false" #sortList
       (selectionChange)="onSortChange($event)">
     @for (sort of sortOptions; track $index) {
-    <mat-list-option [value]="sort.value"
-        [selected]="shopParams.sort === sort.value">{{sort.name}}
-    </mat-list-option>
+      <mat-list-option [value]="sort.value"
+          [selected]="shopParams.sort === sort.value">{{sort.name}}
+      </mat-list-option>
     }
   </mat-selection-list>
 </mat-menu>
+
 } @else {
-  <app-empty-state 
+  <app-empty-state
     message="No products match this filter"
     icon="filter_alt_off"
     actionText="Reset filters"
     (action)="resetFilters()"
   />
-}
+}

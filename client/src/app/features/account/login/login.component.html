@@ -1,19 +1,35 @@
-<mat-card class="max-w-lg mx-auto mt-32 p-8 bg-white">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-semibold text-primary">Login</h1>
-        </div>
-        <mat-form-field appearance="outline" class="w-full mb-4">
-            <mat-label>Email address</mat-label>
-            <input matInput formControlName="email" type="email"
-                placeholder="name@example.com" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="w-full mb-6">
-            <mat-label>Password</mat-label>
-            <input matInput formControlName="password" type="password"
-                placeholder="Password" />
-        </mat-form-field>
-        <button mat-flat-button type="submit" color="primary"
-            class="w-full py-2">Sign in</button>
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
+
+    <!-- Header strip -->
+    <div class="bg-black px-8 py-8 text-center">
+      <h1 class="text-3xl font-extrabold text-white">Welcome back</h1>
+      <p class="text-gray-400 text-sm mt-1">Sign in to your account to continue</p>
+    </div>
+
+    <!-- Form body -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="px-8 py-8 space-y-5">
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Email address</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="name@example.com" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" placeholder="Password" />
+      </mat-form-field>
+
+      <button type="submit"
+        class="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition-all text-white font-bold text-base py-3 rounded-xl mt-2">
+        Sign in
+      </button>
+
+      <p class="text-center text-sm text-gray-500 pt-2">
+        Don't have an account?
+        <a routerLink="/account/register" class="text-orange-500 font-semibold hover:underline">Register</a>
+      </p>
+
     </form>
-</mat-card>
+  </div>
+</div>

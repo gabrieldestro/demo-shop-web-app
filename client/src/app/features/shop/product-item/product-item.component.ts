@@ -1,6 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
 import { Product } from '../../../shared/models/product';
-import { MatCard, MatCardActions, MatCardContent } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
 import { MatButton } from '@angular/material/button';
@@ -10,10 +9,6 @@ import { CartService } from '../../../core/services/cart.service';
 @Component({
   selector: 'app-product-item',
   imports: [
-    MatCard,
-    MatCardContent,
-    MatCardActions,
-    MatCardActions,
     MatIcon,
     CurrencyPipe,
     MatButton,
