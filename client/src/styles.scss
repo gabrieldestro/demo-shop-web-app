@@ -31,3 +31,26 @@
     supporting-text-color: white
   ));
 }
+
+.mat-mdc-menu-panel,
+.mat-mdc-select-panel {
+  background-color: white !important;
+}
+
+.mat-mdc-menu-item,
+.mat-mdc-option,
+.mdc-list-item {
+  padding: 0 16px !important;
+}
+
+.mat-mdc-select-value {
+  padding: 0 8px !important;
+}
+
+.mat-mdc-select-arrow-wrapper {
+  padding-right: 8px !important;
+}
+
+.mat-mdc-select-trigger {
+  padding-right: 8px !important;
+}
