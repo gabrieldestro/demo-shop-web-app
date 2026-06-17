@@ -3,5 +3,5 @@ export const environment = {
   baseUrl: 'api/',
   hubUrl: 'hub/notifications',
   stripePublicKey: "",
-  mockStripe: false
+  mockStripe: true
 };

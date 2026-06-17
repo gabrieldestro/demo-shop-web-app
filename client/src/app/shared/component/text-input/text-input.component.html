@@ -1,4 +1,4 @@
-<mat-form-field appearance="outline" class="w-full mb-3">
+<mat-form-field appearance="outline" class="w-full mb-3" subscriptSizing="dynamic">
     <mat-label>{{label}}</mat-label>
     <input matInput [formControl]="control" [type]="type" placeholder="{{label}}" />
     @if (control.hasError('required')) {

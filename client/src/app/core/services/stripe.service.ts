@@ -22,7 +22,11 @@ export class StripeService {
   private paymentElement?: StripePaymentElement;
 
   constructor() {
-    this.stripePromise = loadStripe(environment.stripePublicKey);
+    if (environment.mockStripe) {
+      this.stripePromise = Promise.resolve(null);
+    } else {
+      this.stripePromise = loadStripe(environment.stripePublicKey);
+    }
   }
 
   getStripeInstance(): Promise<Stripe | null> {

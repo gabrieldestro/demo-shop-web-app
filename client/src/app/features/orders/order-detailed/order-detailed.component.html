@@ -1,96 +1,103 @@
 @if (order) {
-<mat-card class="bg-white py-8 max-w-screen-lg mx-auto shadow-md">
-    <div class="px-4 w-full">
-        <div class="flex justify-between items-center align-middle">
-            <h2 class="text-2xl text-center font-semibold">Order summary for order #{{order.id}}</h2>
-            <button (click)="onReturnClick()" mat-stroked-button>{{buttonText}}</button>
+<section class="bg-gray-50 min-h-screen py-12">
+  <div class="max-w-6xl mx-auto px-4">
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+
+      <!-- Header -->
+      <div class="px-8 py-6 border-b border-gray-100 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-extrabold text-gray-900">Order #{{order.id}}</h2>
+            <p class="text-sm text-gray-500 mt-1">Placed on {{order.orderDate | date: 'medium'}}</p>
+          </div>
+          <button (click)="onReturnClick()" mat-stroked-button>{{buttonText}}</button>
+        </div>
+      </div>
+
+      <div class="p-8">
+
+        <!-- Customer & Order Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div class="space-y-4">
+            <h4 class="text-lg font-bold text-gray-900">Billing & Delivery</h4>
+            <div>
+              <p class="text-sm text-gray-500 font-medium">Shipping address</p>
+              <p class="text-sm font-semibold text-gray-900 mt-1">{{order.shippingAddress | address}}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 font-medium">Payment info</p>
+              <p class="text-sm font-semibold text-gray-900 mt-1">{{order.paymentSummary | paymentCard}}</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h4 class="text-lg font-bold text-gray-900">Order Details</h4>
+            <div>
+              <p class="text-sm text-gray-500 font-medium">Email address</p>
+              <p class="text-sm font-semibold text-gray-900 mt-1">{{order.buyerEmail}}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 font-medium">Order status</p>
+              <span class="inline-block bg-orange-100 text-orange-700 text-sm font-semibold px-3 py-1 rounded-full mt-1">
+                {{order.status}}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div class="mt-8 py-3 border-t border-gray-200 flex gap-16">
-            <div class="space-y-2">
-                <h4 class="text-lg font-semibold">Billing and delivery
-                    information</h4>
-                <dl>
-                    <dt class="font-medium">Shipping address</dt>
-                    <dd class="mt-1 font-light">{{order.shippingAddress |
-                        address }}
-                </dl>
-                <dl>
-                    <dt class="font-medium">Payment info</dt>
-                    <dd class="mt-1 font-light">{{order.paymentSummary |
-                        paymentCard}}</dd>
-                </dl>
-            </div>
-            <div class="space-y-2">
-                <h4 class="text-lg font-semibold">Order details</h4>
-                <dl>
-                    <dt class="font-medium">Email address</dt>
-                    <dd class="mt-1 font-light">{{order.buyerEmail}}</dd>
-                </dl>
-                <dl>
-                    <dt class="font-medium">Order status</dt>
-                    <dd class="mt-1 font-light">{{order.status}}</dd>
-                </dl>
-                <dl>
-                    <dt class="font-medium">Order date</dt>
-                    <dd class="mt-1 font-light">{{order.orderDate | date:
-                        'medium'}}</dd>
-                </dl>
-            </div>
+        <!-- Order Items -->
+        <div class="mb-8">
+          <h4 class="text-lg font-bold text-gray-900 mb-4">Items Ordered</h4>
+          <div class="border border-gray-100 rounded-xl overflow-hidden">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
+                  <th class="px-4 py-3 text-left">Product</th>
+                  <th class="px-4 py-3 text-center">Qty</th>
+                  <th class="px-4 py-3 text-right">Price</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                @for (item of order.orderItems; track item.productId) {
+                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-4">
+                      <img src="{{item.pictureUrl}}" alt="product image"
+                          class="w-12 h-12 rounded-lg object-cover border border-gray-100 bg-gray-50">
+                      <span class="text-sm font-semibold text-gray-900">{{item.productName}}</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 text-center text-sm text-gray-600">x{{item.quantity}}</td>
+                  <td class="px-4 py-4 text-right text-sm font-bold text-gray-900">{{item.price | currency}}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="mt-4">
-            <div class="border-y border-gray-200">
-                <table class="w-full text-center">
-                    <tbody class="divide-y divide-gray-200">
-                        @for (item of order.orderItems; track item.productId) {
-                        <tr>
-                            <td class="py-4">
-                                <div class="flex items-center gap-4">
-                                    <img src="{{item.pictureUrl}}"
-                                        alt="product image" class="w-10 h-10">
-                                    <span>{{item.productName}}</span>
-                                </div>
-                            </td>
-                            <td class="p-4">x{{item.quantity}}</td>
-                            <td class="p-4 text-right">{{item.price | currency}}
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
+        <!-- Order Summary (Totals) -->
+        <div class="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+          <h4 class="text-lg font-bold text-gray-900 mb-4">Order Summary</h4>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500 font-medium">Subtotal</span>
+              <span class="text-sm font-semibold text-gray-900">{{order.subtotal | currency}}</span>
             </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500 font-medium">Delivery fee</span>
+              <span class="text-sm font-semibold text-gray-900">{{order.shippingPrice | currency}}</span>
+            </div>
+          </div>
+          <div class="mx-0 my-4 border-t border-gray-200"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-base font-bold text-gray-900">Total</span>
+            <span class="text-xl font-extrabold text-orange-500">{{order.total | currency}}</span>
+          </div>
         </div>
 
-        <div class="space-y-4 rounded-lg border-t border-gray-200 p-4 bg-white">
-            <p class="text-xl font-semibold">Order summary</p>
-            <div class="space-y-4">
-                <div class="space-y-2">
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="font-medium text-gray-500">Subtotal</dt>
-                        <dd class="font-medium text-gray-900">
-                            {{order.subtotal | currency}}
-                        </dd>
-                    </dl>
-                    <dl class="flex items-center justify-between gap-4">
-                        <dt class="font-medium text-gray-500">Delivery fee</dt>
-                        <dd class="font-medium text-gray-900">
-                            {{order.shippingPrice | currency}}
-                        </dd>
-                    </dl>
-                </div>
-
-                <dl
-                    class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
-                    <dt class="font-medium text-gray-500">Total</dt>
-                    <dd class="font-medium text-gray-900">
-                        {{order.total | currency}}
-                    </dd>
-                </dl>
-            </div>
-
-        </div>
-
+      </div>
     </div>
-</mat-card>
+  </div>
+</section>
 }

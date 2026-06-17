@@ -65,6 +65,10 @@
   border-right-style: none !important;
 }
 
+.mdc-text-field--outlined .mdc-text-field__input {
+  padding: 8px 16px !important;
+}
+
 .snack-error {
   @include mat.snack-bar-overrides((
     button-color: white,

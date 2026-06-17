@@ -1,27 +1,48 @@
-<div class="mx-auto mt-32">
-    <h2 class="font-semibold text-2xl mb-6 text-center">My orders</h2>
-    <div class="flex flex-col">
-        <div class="w-full">
-            <table class="min-w-full divide-y divide-gray-200 cursor-pointer">
-                <thead class="bg-gray-50">
-                    <tr class="uppercase text-gray-600 text-sm">
-                        <th class="text-center px-6 py-3">Order</th>
-                        <th class="text-left">Date</th>
-                        <th class="text-left">Total</th>
-                        <th class="text-left">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @for (order of orders; track order.id) {
-                        <tr routerLink="/orders/{{order.id}}" class="hover:bg-gray-100">
-                            <th class="px-6 py-3"># {{order.id}}</th>
-                            <td>{{order.orderDate | date: 'medium'}}</td>
-                            <td>{{order.total | currency}}</td>
-                            <td>{{order.status}}</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+<section class="bg-gray-50 min-h-screen py-12">
+  <div class="mx-auto max-w-5xl px-4">
+    <h2 class="text-2xl font-extrabold text-gray-900 mb-6">My Orders</h2>
+
+    @if (orders.length > 0) {
+    <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-100">
+        <thead>
+          <tr class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider">
+            <th class="px-6 py-4 text-left">Order</th>
+            <th class="px-6 py-4 text-left">Date</th>
+            <th class="px-6 py-4 text-left">Total</th>
+            <th class="px-6 py-4 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          @for (order of orders; track order.id) {
+          <tr routerLink="/orders/{{order.id}}"
+              class="hover:bg-orange-50 transition-colors duration-200 cursor-pointer">
+            <td class="px-6 py-4 text-sm font-semibold text-gray-900">#{{order.id}}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{order.orderDate | date: 'medium'}}</td>
+            <td class="px-6 py-4 text-sm font-bold text-orange-500">{{order.total | currency}}</td>
+            <td class="px-6 py-4">
+              <span class="inline-block bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1 rounded-full">
+                {{order.status}}
+              </span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
     </div>
-</div>
+    } @else {
+    <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+      <div class="flex flex-col items-center justify-center py-16 px-4">
+        <mat-icon class="!text-5xl !w-12 !h-12 text-gray-300 mb-4">receipt_long</mat-icon>
+        <p class="text-lg font-semibold text-gray-900 mb-1">No orders yet</p>
+        <p class="text-sm text-gray-500 mb-6">You haven't placed any orders yet</p>
+        <button routerLink="/shop" mat-flat-button
+            class="!rounded-xl !bg-orange-500 !text-white hover:!bg-orange-600 !font-semibold transition-colors duration-200 shadow-sm">
+          Start Shopping
+        </button>
+      </div>
+    </div>
+    }
+
+  </div>
+</section>

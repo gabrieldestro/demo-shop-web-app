@@ -1,90 +1,137 @@
-<div>
-  <mat-tab-group>
-    <mat-tab label="Orders">
-      <div class="flex justify-between items-center mt-2 max-w-screen-xl mx-auto">
-        <h2 class="text-2xl font-semibold">Customer orders</h2>
-        <mat-form-field appearance="outline" class="mt-2">
-          <mat-label>Filter by status</mat-label>
-          <mat-select (selectionChange)="onFilterSelect($event)">
-            @for (status of statusOptions; track $index) {
-              <mat-option [value]="status">{{status}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="p-4">
-        <div class="mat-elevation-z8">
-          <table mat-table [dataSource]="dataSource" class="bg-white">
-        
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef> No. </th>
-              <td mat-cell *matCellDef="let order"> {{order.id}} </td>
-            </ng-container>
+<section class="bg-gray-50 min-h-screen">
+  <div class="max-w-screen-2xl mx-auto px-4 py-8">
 
-            <ng-container matColumnDef="buyerEmail">
-              <th mat-header-cell *matHeaderCellDef> Buyer email </th>
-              <td mat-cell *matCellDef="let order"> {{order.buyerEmail}} </td>
-            </ng-container>
-        
-            <ng-container matColumnDef="orderDate">
-              <th mat-header-cell *matHeaderCellDef> Date </th>
-              <td mat-cell *matCellDef="let order"> {{order.orderDate | date: 'short'}} </td>
-            </ng-container>
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-extrabold text-gray-900">Admin Panel</h1>
+    </div>
 
-            <ng-container matColumnDef="total">
-              <th mat-header-cell *matHeaderCellDef> Total </th>
-              <td mat-cell *matCellDef="let order"> {{order.total | currency}} </td>
-            </ng-container>
-        
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let order"> {{order.status}} </td>
-            </ng-container>
-        
-            <ng-container matColumnDef="action">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let order">
-                <button mat-icon-button routerLink="/orders/{{order.id}}" matTooltip="View">
-                  <mat-icon class="text-blue-600">visibility</mat-icon>
-                </button>
-                <button 
-                  [disabled]="order.status === 'Refunded'"
-                  mat-icon-button (click)="openConfirmDialog(order.id)" 
-                    matTooltip="Refund">
-                  <mat-icon class="text-red-500">undo</mat-icon>
-                </button>
-              </td>
-            </ng-container>
+    <mat-tab-group class="[&_.mdc-tab__text-label]:font-semibold [&_.mdc-tab-indicator__content--underline]:!border-orange-500 [&_.mdc-tab--active_.mdc-tab__text-label]:!text-orange-500">
 
-            <ng-container *matNoDataRow>
-              <div class="p-4">
-                No orders available for this filter
-              </div>
-            </ng-container>
-        
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-          </table>
-        
-          <mat-paginator 
-            class="bg-white"
-            [pageSizeOptions]="[5, 10, 20]"
-            [length]="totalItems"
-            [pageSize]="orderParams.pageSize"
-            showFirstLastButtons
-            (page)="onPageChange($event)"
-          />
+      <!-- Orders Tab -->
+      <mat-tab label="Orders">
+        <div class="mt-6">
+
+          <!-- Header with filter -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 class="text-xl font-bold text-gray-900">Customer Orders</h2>
+            <mat-form-field appearance="outline" class="!mb-0 min-w-[200px]">
+              <mat-label>Filter by status</mat-label>
+              <mat-select (selectionChange)="onFilterSelect($event)">
+                @for (status of statusOptions; track $index) {
+                <mat-option [value]="status">{{status}}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Table Card -->
+          <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="dataSource">
+
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> No. </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3 text-sm font-semibold text-gray-900"> #{{order.id}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="buyerEmail">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Buyer email </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3 text-sm text-gray-600"> {{order.buyerEmail}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="orderDate">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Date </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3 text-sm text-gray-600"> {{order.orderDate | date: 'short'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Total </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3 text-sm font-bold text-orange-500"> {{order.total | currency}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Status </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3">
+                    <span class="inline-block bg-orange-100 text-orange-700 text-xs font-semibold px-3 py-1 rounded-full">
+                      {{order.status}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Actions </th>
+                  <td mat-cell *matCellDef="let order" class="px-4 py-3">
+                    <div class="flex items-center gap-1">
+                      <button mat-icon-button routerLink="/orders/{{order.id}}" matTooltip="View order"
+                          class="!w-8 !h-8 text-gray-400 hover:text-orange-500 transition-colors duration-200">
+                        <mat-icon class="!text-xl">visibility</mat-icon>
+                      </button>
+                      <button [disabled]="order.status === 'Refunded'"
+                          mat-icon-button (click)="openConfirmDialog(order.id)"
+                          matTooltip="Refund order"
+                          class="!w-8 !h-8 text-gray-400 hover:text-red-500 transition-colors duration-200"
+                          [class.opacity-30]="order.status === 'Refunded'">
+                        <mat-icon class="!text-xl">undo</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container *matNoDataRow>
+                  <tr>
+                    <td colspan="6" class="px-4 py-12 text-center">
+                      <mat-icon class="!text-4xl !w-10 !h-10 text-gray-300 mb-2">receipt_long</mat-icon>
+                      <p class="text-gray-500 text-sm">No orders available for this filter</p>
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="border-b border-gray-100"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    class="border-b border-gray-100 hover:bg-orange-50 transition-colors duration-200 cursor-pointer"
+                    routerLink="/orders/{{row.id}}"></tr>
+              </table>
+            </div>
+
+            <mat-paginator
+              class="bg-white border-t border-gray-100"
+              [pageSizeOptions]="[5, 10, 20]"
+              [length]="totalItems"
+              [pageSize]="orderParams.pageSize"
+              showFirstLastButtons
+              (page)="onPageChange($event)"
+            />
+          </div>
         </div>
-      </div>
-    </mat-tab>
+      </mat-tab>
 
-    <mat-tab label="Catalog">
-      <div class="p-4">Catalog content</div>
-    </mat-tab>
+      <!-- Catalog Tab -->
+      <mat-tab label="Catalog">
+        <div class="mt-6">
+          <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+            <div class="flex flex-col items-center justify-center py-16 px-4">
+              <mat-icon class="!text-5xl !w-12 !h-12 text-gray-300 mb-4">inventory_2</mat-icon>
+              <p class="text-lg font-semibold text-gray-900 mb-1">Catalog Management</p>
+              <p class="text-sm text-gray-500">Coming soon</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-    <mat-tab label="Other">
-      <div class="p-4">Customer service</div>
-    </mat-tab>
+      <!-- Other Tab -->
+      <mat-tab label="Other">
+        <div class="mt-6">
+          <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+            <div class="flex flex-col items-center justify-center py-16 px-4">
+              <mat-icon class="!text-5xl !w-12 !h-12 text-gray-300 mb-4">support_agent</mat-icon>
+              <p class="text-lg font-semibold text-gray-900 mb-1">Customer Service</p>
+              <p class="text-sm text-gray-500">Coming soon</p>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-  </mat-tab-group>
-</div>
+    </mat-tab-group>
+  </div>
+</section>

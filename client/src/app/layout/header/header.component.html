@@ -1,50 +1,65 @@
-<header class="shadow-md max-h-20 p-3 w-full fixed top-0 bg-white z-50">
-  <div
-      class="flex align-middle items-center justify-between max-w-screen-2xl mx-auto">
-    <img routerLink="/" src="/images/logo.png" alt="app logo" class="max-h-16">
-    <nav class="flex gap-3 my-2 uppercase text-2xl">
-      <a routerLink="/" routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}">Home</a>
-      <a routerLink="/shop" routerLinkActive="active">Shop</a>
-      <a *appIsAdmin routerLink="/admin" routerLinkActive="active">Admin</a>
+<header class="bg-white shadow-md h-16 px-4 fixed top-0 w-full z-50">
+  <div class="flex items-center justify-between max-w-screen-2xl mx-auto h-full">
+
+    <!-- Logo -->
+    <img routerLink="/" src="/images/logo.png" alt="app logo" class="max-h-10">
+
+    <!-- Navigation -->
+    <nav class="flex items-center gap-1">
+      <a routerLink="/" routerLinkActive="text-orange-500 font-semibold"
+          [routerLinkActiveOptions]="{exact: true}"
+          class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200 uppercase tracking-wider">
+        Home
+      </a>
+      <a routerLink="/shop" routerLinkActive="text-orange-500 font-semibold"
+          class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200 uppercase tracking-wider">
+        Shop
+      </a>
+      <a *appIsAdmin routerLink="/admin" routerLinkActive="text-orange-500 font-semibold"
+          class="px-3 py-2 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200 uppercase tracking-wider">
+        Admin
+      </a>
     </nav>
-    <div class="flex gap-3 align-middle">
+
+    <!-- Right side -->
+    <div class="flex items-center gap-2">
       <a matBadge="{{cartService.itemCount()}}" routerLink="/cart"
-          routerLinkActive="active" matBadgeSize="large"
-          class="custom-badge mt-2 mr-2">
+          routerLinkActive="text-orange-500"
+          matBadgeSize="large"
+          class="custom-badge mt-2 mr-2 text-gray-700 hover:text-orange-500 transition-colors duration-200">
         <mat-icon>shopping_cart</mat-icon>
       </a>
+
       @if (accountService.currentUser()) {
-      <div class="px-6">
-        <button mat-button [matMenuTriggerFor]="menu">
-          <mat-icon>arrow_drop_down</mat-icon>
-          <span>{{accountService.currentUser()?.email}}</span>
+      <button mat-button [matMenuTriggerFor]="menu"
+          class="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors duration-200">
+        <mat-icon class="text-base">arrow_drop_down</mat-icon>
+        <span class="hidden sm:inline">{{accountService.currentUser()?.email}}</span>
+      </button>
+      <mat-menu #menu="matMenu" class="mt-2">
+        <button mat-menu-item routerLink="/cart" class="text-sm">
+          <mat-icon>shopping_cart</mat-icon>
+          My cart
         </button>
-        <mat-menu #menu="matMenu" class="px-3">
-          <button mat-menu-item routerLink="/cart">
-            <mat-icon>shopping_cart</mat-icon>
-            My cart
-          </button>
-          <button mat-menu-item routerLink="/orders">
-            <mat-icon>history</mat-icon>
-            View Orders
-          </button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="logout()">
-            <mat-icon>logout</mat-icon>
-            Logout</button>
-        </mat-menu>
-      </div>
+        <button mat-menu-item routerLink="/orders" class="text-sm">
+          <mat-icon>history</mat-icon>
+          View Orders
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()" class="text-sm">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
       } @else {
-      <button mat-stroked-button routerLink="/account/login">Login</button>
-      <button mat-stroked-button
-          routerLink="/account/register">Register</button>
+      <button mat-stroked-button routerLink="/account/login" class="!text-sm">Login</button>
+      <button mat-stroked-button routerLink="/account/register" class="!text-sm">Register</button>
       }
     </div>
+
   </div>
 </header>
 
 @if (busyService.loading) {
-<mat-progress-bar class="fixed top-20 z-50"
-    mode="indeterminate"></mat-progress-bar>
+<mat-progress-bar class="fixed top-16 z-50" mode="indeterminate"></mat-progress-bar>
 }

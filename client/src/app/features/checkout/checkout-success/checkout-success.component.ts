@@ -1,5 +1,6 @@
 import { Component, inject, OnDestroy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { SignalrService } from '../../../core/services/signalr.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -12,6 +13,7 @@ import { OrderService } from '../../../core/services/order.service';
   selector: 'app-checkout-success',
   imports: [
     MatButton,
+    MatIcon,
     RouterLink,
     MatProgressSpinnerModule,
     DatePipe,
