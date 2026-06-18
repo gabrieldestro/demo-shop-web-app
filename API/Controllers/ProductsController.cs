@@ -97,6 +97,19 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
     }
 
     [Cached(100000)]
+    [HttpGet("{id}/related")]
+    public async Task<ActionResult<IReadOnlyList<Product>>> GetRelatedProducts(int id)
+    {
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
+        if (product == null) return NotFound();
+
+        var spec = new RelatedProductSpecification(id, product.Brand, product.Type);
+        var related = await unit.Repository<Product>().ListAsync(spec);
+
+        return Ok(related);
+    }
+
+    [Cached(100000)]
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
     {

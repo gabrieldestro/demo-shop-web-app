@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ShopService } from '../../../core/services/shop.service';
 import { Product } from '../../../shared/models/product';
 import { CurrencyPipe } from '@angular/common';
@@ -22,7 +22,8 @@ import { FormsModule } from '@angular/forms';
     MatButton,
     MatFormField,
     MatInput,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss'
@@ -32,22 +33,32 @@ export class ProductDetailsComponent implements OnInit {
   private cartService = inject(CartService);
   private activatedRoute = inject(ActivatedRoute);
   product?: Product;
+  relatedProducts: Product[] = [];
   quantityInCart = 0;
   quantity = 1;
 
 
   ngOnInit() {
-    this.loadProduct();
+    this.activatedRoute.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) this.loadProduct(+id);
+    });
   }
 
-  loadProduct() {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (!id) return;
-    this.shopService.getProduct(+id).subscribe({
+  loadProduct(id: number) {
+    this.shopService.getProduct(id).subscribe({
       next: product => {
         this.product = product
         this.updateQuantityInBasket();
+        this.loadRelatedProducts(product.id);
       },
+      error: error => console.log(error)
+    });
+  }
+
+  loadRelatedProducts(id: number) {
+    this.shopService.getRelatedProducts(id).subscribe({
+      next: products => this.relatedProducts = products,
       error: error => console.log(error)
     });
   }

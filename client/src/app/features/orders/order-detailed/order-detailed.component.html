@@ -88,6 +88,12 @@
               <span class="text-sm text-gray-500 font-medium">Delivery fee</span>
               <span class="text-sm font-semibold text-gray-900">{{order.shippingPrice | currency}}</span>
             </div>
+            @if (order.discountAmount > 0) {
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-500 font-medium">Discount</span>
+              <span class="text-sm font-semibold text-green-500">-{{order.discountAmount | currency}}</span>
+            </div>
+            }
           </div>
           <div class="mx-0 my-4 border-t border-gray-200"></div>
           <div class="flex items-center justify-between">

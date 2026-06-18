@@ -43,6 +43,10 @@ export class ShopService {
     return this.http.get<Product>(this.baseUrl + 'products/' + id);
   }
 
+  getRelatedProducts(id: number) {
+    return this.http.get<Product[]>(this.baseUrl + 'products/' + id + '/related');
+  }
+
   getBrands() {
     if (this.brands.length > 0) return;
     return this.http.get<string[]>(this.baseUrl + 'products/brands').subscribe({

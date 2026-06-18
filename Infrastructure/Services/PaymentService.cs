@@ -34,7 +34,7 @@ public class PaymentService : IPaymentService
 
         var discountAmount = await CalculateDiscountAsync(cart, subtotal);
 
-        cart.DiscountPercent = subtotal > 0 ? (discountAmount / subtotal) * 100 : 0;
+        cart.DiscountPercent = subtotal > 0 ? (decimal)discountAmount / subtotal * 100 : 0;
 
         var total = subtotal + shippingPrice - discountAmount;
 

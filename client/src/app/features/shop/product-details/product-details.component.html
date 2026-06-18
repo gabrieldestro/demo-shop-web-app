@@ -73,6 +73,28 @@
                 </div>
             </div>
         </div>
+
+        <!-- Related Products -->
+        @if (relatedProducts.length > 0) {
+        <div class="mt-12">
+            <h2 class="text-2xl font-extrabold text-gray-900 mb-6">Related Products</h2>
+            <div class="flex gap-6 overflow-x-auto pb-4">
+                @for (related of relatedProducts; track related.id) {
+                <a [routerLink]="['/shop', related.id]"
+                   class="flex-shrink-0 w-56 bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-200 group">
+                    <div class="h-44 bg-gray-100 flex items-center justify-center p-4">
+                        <img src="{{related.pictureUrl}}" alt="{{related.name}}"
+                             class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-4">
+                        <p class="text-sm font-bold text-gray-900 truncate">{{related.name}}</p>
+                        <p class="text-lg font-black text-orange-500 mt-1">{{related.price | currency}}</p>
+                    </div>
+                </a>
+                }
+            </div>
+        </div>
+        }
     </div>
 </section>
 }
