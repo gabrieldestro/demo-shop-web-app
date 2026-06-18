@@ -82,4 +82,94 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
 
         return BadRequest("Problem updating stock");
     }
+
+    [HttpGet("coupons")]
+    public async Task<ActionResult<IReadOnlyList<CouponDto>>> GetCoupons()
+    {
+        var coupons = await unit.Repository<Coupon>().ListAllAsync();
+        return Ok(coupons.Select(c => new CouponDto
+        {
+            Id = c.Id,
+            Code = c.Code,
+            DiscountPercent = c.DiscountPercent,
+            IsActive = c.IsActive
+        }).ToList());
+    }
+
+    [HttpPost("coupons")]
+    public async Task<ActionResult<CouponDto>> CreateCoupon(CreateCouponDto dto)
+    {
+        var spec = new CouponSpecification(dto.Code.ToUpper());
+        var existing = await unit.Repository<Coupon>().GetEntityWithSpec(spec);
+        if (existing != null)
+            return BadRequest("A coupon with this code already exists");
+
+        var coupon = new Coupon
+        {
+            Code = dto.Code.ToUpper(),
+            DiscountPercent = dto.DiscountPercent,
+            IsActive = true
+        };
+
+        unit.Repository<Coupon>().Add(coupon);
+        if (await unit.Complete())
+        {
+            return new CouponDto
+            {
+                Id = coupon.Id,
+                Code = coupon.Code,
+                DiscountPercent = coupon.DiscountPercent,
+                IsActive = coupon.IsActive
+            };
+        }
+
+        return BadRequest("Problem creating coupon");
+    }
+
+    [HttpPut("coupons/{id:int}")]
+    public async Task<ActionResult<CouponDto>> UpdateCoupon(int id, CreateCouponDto dto)
+    {
+        var coupon = await unit.Repository<Coupon>().GetByIdAsync(id);
+        if (coupon == null) return NotFound();
+
+        coupon.Code = dto.Code.ToUpper();
+        coupon.DiscountPercent = dto.DiscountPercent;
+
+        unit.Repository<Coupon>().Update(coupon);
+        if (await unit.Complete())
+        {
+            return new CouponDto
+            {
+                Id = coupon.Id,
+                Code = coupon.Code,
+                DiscountPercent = coupon.DiscountPercent,
+                IsActive = coupon.IsActive
+            };
+        }
+
+        return BadRequest("Problem updating coupon");
+    }
+
+    [HttpPut("coupons/{id:int}/toggle")]
+    public async Task<ActionResult<CouponDto>> ToggleCoupon(int id)
+    {
+        var coupon = await unit.Repository<Coupon>().GetByIdAsync(id);
+        if (coupon == null) return NotFound();
+
+        coupon.IsActive = !coupon.IsActive;
+
+        unit.Repository<Coupon>().Update(coupon);
+        if (await unit.Complete())
+        {
+            return new CouponDto
+            {
+                Id = coupon.Id,
+                Code = coupon.Code,
+                DiscountPercent = coupon.DiscountPercent,
+                IsActive = coupon.IsActive
+            };
+        }
+
+        return BadRequest("Problem toggling coupon");
+    }
 }

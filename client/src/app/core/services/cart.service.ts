@@ -25,11 +25,13 @@ export class CartService {
     if (!cart) return null;
     const subtotal = cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shipping = delivery ? delivery.price : 0;
-    const discount = 0;
+    const discount = cart.discountPercent && cart.discountPercent > 0
+      ? subtotal * (cart.discountPercent / 100)
+      : 0;
     return {
       subtotal,
       shipping,
-      discount: 0,
+      discount,
       total: subtotal + shipping - discount
     };
   })
@@ -142,5 +144,19 @@ export class CartService {
     const cart = new Cart();
     localStorage.setItem('cart_id', cart.id);
     return cart;
+  }
+
+  applyCoupon(couponCode: string) {
+    return this.http.get<{ code: string; discountPercent: number }>(
+      this.baseUrl + 'coupons/validate?code=' + couponCode
+    );
+  }
+
+  removeCoupon() {
+    const cart = this.cart();
+    if (!cart) return;
+    cart.couponCode = undefined;
+    cart.discountPercent = undefined;
+    this.setCart(cart);
   }
 }

@@ -38,4 +38,27 @@ export class AdminService {
   updateProductStock(id: number, quantityInStock: number) {
     return this.http.put(this.baseUrl + 'admin/products/' + id + '/stock', { quantityInStock });
   }
+
+  getCoupons() {
+    return this.http.get<CouponDto[]>(this.baseUrl + 'admin/coupons');
+  }
+
+  createCoupon(code: string, discountPercent: number) {
+    return this.http.post<CouponDto>(this.baseUrl + 'admin/coupons', { code, discountPercent });
+  }
+
+  updateCoupon(id: number, code: string, discountPercent: number) {
+    return this.http.put<CouponDto>(this.baseUrl + 'admin/coupons/' + id, { code, discountPercent });
+  }
+
+  toggleCoupon(id: number) {
+    return this.http.put<CouponDto>(this.baseUrl + 'admin/coupons/' + id + '/toggle', {});
+  }
+}
+
+export type CouponDto = {
+  id: number;
+  code: string;
+  discountPercent: number;
+  isActive: boolean;
 }

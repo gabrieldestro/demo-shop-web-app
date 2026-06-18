@@ -1,5 +1,6 @@
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 
@@ -31,13 +32,29 @@ public class PaymentService : IPaymentService
 
         var subtotal = CalculateSubtotal(cart);
 
-        var total = subtotal + shippingPrice;
+        var discountAmount = await CalculateDiscountAsync(cart, subtotal);
+
+        cart.DiscountPercent = subtotal > 0 ? (discountAmount / subtotal) * 100 : 0;
+
+        var total = subtotal + shippingPrice - discountAmount;
 
         await CreateUpdatePaymentIntentAsync(cart, total);
 
         await cartService.SetCartAsync(cart);
 
         return cart;
+    }
+
+    private async Task<long> CalculateDiscountAsync(ShoppingCart cart, long subtotal)
+    {
+        if (string.IsNullOrEmpty(cart.CouponCode)) return 0;
+
+        var spec = new CouponSpecification(cart.CouponCode.ToUpper());
+        var coupon = await unit.Repository<Core.Entities.Coupon>().GetEntityWithSpec(spec);
+
+        if (coupon == null || !coupon.IsActive) return 0;
+
+        return (long)(subtotal * (coupon.DiscountPercent / 100));
     }
 
     public async Task<string> RefundPayment(string paymentIntentId)

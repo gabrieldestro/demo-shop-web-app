@@ -13,10 +13,12 @@
         <span class="text-sm font-semibold text-gray-800">{{cartService.totals()?.subtotal | currency}}</span>
       </div>
 
+      @if (cartService.totals()?.discount! > 0) {
       <div class="flex items-center justify-between">
         <span class="text-sm text-gray-500 font-medium">Discount</span>
         <span class="text-sm font-semibold text-green-500">-{{cartService.totals()?.discount | currency}}</span>
       </div>
+      }
 
       <div class="flex items-center justify-between">
         <span class="text-sm text-gray-500 font-medium">Delivery fee</span>

@@ -256,6 +256,121 @@
         </div>
       </mat-tab>
 
+      <!-- Coupons Tab -->
+      <mat-tab label="Coupons">
+        <div class="mt-6">
+
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 class="text-xl font-bold text-gray-900">Coupon Codes</h2>
+            <button mat-flat-button (click)="showAddCoupon = !showAddCoupon"
+                class="!rounded-xl !py-2 !px-4 !text-sm !font-bold !bg-orange-500 !text-white hover:!bg-orange-600 transition-colors duration-200 shadow-sm">
+              <mat-icon class="!text-lg !mr-1">add</mat-icon>
+              Add Coupon
+            </button>
+          </div>
+
+          <!-- Add Coupon Form -->
+          @if (showAddCoupon) {
+          <div class="mb-6 p-4 bg-orange-50 rounded-xl border border-orange-200">
+            <div class="flex items-center gap-3 flex-wrap">
+              <input type="text" [(ngModel)]="newCouponCode" placeholder="Coupon code (e.g. SAVE10)"
+                  class="h-10 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 min-w-[180px]">
+              <input type="number" min="1" max="100" [(ngModel)]="newCouponDiscount" placeholder="Discount %"
+                  class="h-10 w-24 px-3 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
+              <button (click)="addCoupon()"
+                  class="h-10 px-4 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-sm disabled:opacity-50"
+                  [disabled]="!newCouponCode.trim() || newCouponDiscount <= 0">
+                Create
+              </button>
+              <button (click)="showAddCoupon = false"
+                  class="h-10 px-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+                Cancel
+              </button>
+            </div>
+          </div>
+          }
+
+          <!-- Coupons Table Card -->
+          <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="coupons" class="w-full">
+
+                <ng-container matColumnDef="code">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Code </th>
+                  <td mat-cell *matCellDef="let coupon" class="px-4 py-3">
+                    @if (editingCouponId === coupon.id) {
+                      <input type="text" [(ngModel)]="editingCouponCode"
+                          class="w-32 px-2 py-1.5 border-2 border-orange-500 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30">
+                    } @else {
+                      <span class="text-sm font-bold text-gray-900">{{coupon.code}}</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="discount">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Discount </th>
+                  <td mat-cell *matCellDef="let coupon" class="px-4 py-3">
+                    @if (editingCouponId === coupon.id) {
+                      <input type="number" min="1" max="100" [(ngModel)]="editingCouponDiscount"
+                          class="w-20 px-2 py-1.5 border-2 border-orange-500 rounded-lg text-sm font-bold text-gray-900 text-center focus:outline-none focus:ring-2 focus:ring-orange-500/30">
+                    } @else {
+                      <span class="text-sm font-bold text-green-600">{{coupon.discountPercent / 100 | percent}}</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Status </th>
+                  <td mat-cell *matCellDef="let coupon" class="px-4 py-3">
+                    <mat-slide-toggle [checked]="coupon.isActive" (toggleChange)="toggleCoupon(coupon.id)"
+                        color="primary"
+                        class="[&_.mdc-switch__icon--on_.mdc-switch__icon]:!fill-orange-500 [&_.mdc-switch__track::after]:!bg-orange-500">
+                    </mat-slide-toggle>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3"> Actions </th>
+                  <td mat-cell *matCellDef="let coupon" class="px-4 py-3">
+                    @if (editingCouponId === coupon.id) {
+                      <div class="flex items-center gap-2">
+                        <button mat-icon-button (click)="saveEditCoupon()" matTooltip="Save"
+                            class="!w-7 !h-7 text-green-500 hover:text-green-600 transition-colors">
+                          <mat-icon class="!text-lg">check_circle</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="cancelEditCoupon()" matTooltip="Cancel"
+                            class="!w-7 !h-7 text-gray-400 hover:text-red-500 transition-colors">
+                          <mat-icon class="!text-lg">cancel</mat-icon>
+                        </button>
+                      </div>
+                    } @else {
+                      <button mat-icon-button (click)="startEditCoupon(coupon)" matTooltip="Edit coupon"
+                          class="!w-7 !h-7 text-gray-400 hover:text-orange-500 transition-colors">
+                        <mat-icon class="!text-lg">edit</mat-icon>
+                      </button>
+                    }
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['code', 'discount', 'status', 'actions']" class="border-b border-gray-100"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['code', 'discount', 'status', 'actions'];"
+                    class="border-b border-gray-100 hover:bg-orange-50 transition-colors duration-200"></tr>
+
+                @if (coupons.length === 0) {
+                  <tr>
+                    <td colspan="4" class="px-4 py-12 text-center">
+                      <mat-icon class="!text-4xl !w-10 !h-10 text-gray-300 mb-2">confirmation_number</mat-icon>
+                      <p class="text-gray-500 text-sm">No coupons yet. Create your first coupon!</p>
+                    </td>
+                  </tr>
+                }
+              </table>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
     </mat-tab-group>
   </div>
 </section>

@@ -18,6 +18,8 @@ namespace API.Extensions
                 ShippingPrice = order.DeliveryMethod.Price,
                 OrderItems = order.OrderItems.Select(x => x.ToDto()).ToList(),
                 Subtotal = order.Subtotal,
+                DiscountPercent = order.DiscountPercent,
+                DiscountAmount = order.DiscountAmount,
                 Status = order.Status.ToString(),
                 PaymentIntentId = order.PaymentIntentId,
                 Total = order.GetTotal()

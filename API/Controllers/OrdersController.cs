@@ -63,12 +63,29 @@ namespace API.Controllers
 
             if (deliveryMethod == null) return BadRequest("No delivery method selected");
 
+            var subtotal = items.Sum(x => x.Price * x.Quantity);
+            var discountAmount = 0m;
+            var discountPercent = 0m;
+
+            if (!string.IsNullOrEmpty(cart.CouponCode))
+            {
+                var couponSpec = new CouponSpecification(cart.CouponCode.ToUpper());
+                var coupon = await unit.Repository<Coupon>().GetEntityWithSpec(couponSpec);
+                if (coupon != null && coupon.IsActive)
+                {
+                    discountPercent = coupon.DiscountPercent;
+                    discountAmount = subtotal * (discountPercent / 100);
+                }
+            }
+
             var order = new Order
             {
                 OrderItems = items,
                 DeliveryMethod = deliveryMethod,
                 ShippingAddress = orderDto.ShippingAddress,
-                Subtotal = items.Sum(x => x.Price * x.Quantity),
+                Subtotal = subtotal,
+                DiscountPercent = discountPercent,
+                DiscountAmount = discountAmount,
                 PaymentSummary = orderDto.PaymentSummary,
                 PaymentIntentId = cart.PaymentIntentId,
                 BuyerEmail = email,

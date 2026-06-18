@@ -16,6 +16,8 @@ namespace Infrastructure.Config
                 o => (OrderStatus)Enum.Parse(typeof(OrderStatus), o)
             );
             builder.Property(x => x.Subtotal).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.DiscountPercent).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.DiscountAmount).HasColumnType("decimal(18,2)");
             builder.HasMany(x => x.OrderItems).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Property(x => x.OrderDate).HasConversion(
                 x => x.ToUniversalTime(),

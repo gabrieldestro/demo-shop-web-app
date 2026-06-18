@@ -7,7 +7,42 @@
       <app-cart-item [item]="item"></app-cart-item>
       }
     </div>
-    <div class="w-1/4">
+    <div class="w-1/4 flex flex-col gap-4">
+      <!-- Coupon Section -->
+      <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+          <p class="text-base font-bold text-gray-900 tracking-wide uppercase">Promo Code</p>
+        </div>
+        <div class="px-6 py-5">
+          @if (cartService.cart()?.couponCode) {
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <mat-icon class="!text-lg text-green-500">check_circle</mat-icon>
+                <span class="text-sm font-semibold text-green-700">{{cartService.cart()?.couponCode}}</span>
+                <span class="text-xs font-medium text-green-500">({{cartService.cart()?.discountPercent}}% off)</span>
+              </div>
+              <button mat-icon-button (click)="removeCoupon()" matTooltip="Remove coupon"
+                  class="!w-7 !h-7 text-gray-400 hover:text-red-500 transition-colors">
+                <mat-icon class="!text-lg">close</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <div class="flex items-center gap-2">
+              <input type="text" [(ngModel)]="couponCode" placeholder="Enter coupon code"
+                  class="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200"
+                  (keyup.enter)="applyCoupon()">
+              <button mat-flat-button (click)="applyCoupon()" [disabled]="applyingCoupon || !couponCode.trim()"
+                  class="!rounded-lg !py-2 !px-3 !text-sm !font-bold !bg-orange-500 !text-white hover:!bg-orange-600 transition-colors duration-200 shadow-sm disabled:!opacity-50">
+                @if (applyingCoupon) {
+                  <mat-icon class="!text-lg animate-spin">hourglass_top</mat-icon>
+                } @else {
+                  Apply
+                }
+              </button>
+            </div>
+          }
+        </div>
+      </div>
       <app-order-summary></app-order-summary>
     </div>
   </div>

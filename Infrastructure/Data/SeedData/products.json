@@ -1,164 +1,164 @@
 [
   {
-    "Name": "Angular Speedster Board 2000",
-    "Description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-    "Price": 200,
-    "PictureUrl": "/images/products/sb-ang1.png",
-    "Type": "Boards",
-    "Brand": "Angular",
+    "Name": "AeroFlex Pro Running Shoes",
+    "Description": "Lightweight athletic shoes with advanced cushioning technology for running and daily workouts.",
+    "Price": 249.99,
+    "PictureUrl": "/images/products/shoes-aeroflex1.png",
+    "Type": "Running Shoes",
+    "Brand": "AeroFlex",
     "QuantityInStock": 82
   },
   {
-    "Name": "Green Angular Board 3000",
-    "Description": "Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.",
-    "Price": 150,
-    "PictureUrl": "/images/products/sb-ang2.png",
-    "Type": "Boards",
-    "Brand": "Angular",
-    "QuantityInStock": 75
-  },
-  {
-    "Name": "Core Board Speed Rush 3",
-    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
-    "Price": 180,
-    "PictureUrl": "/images/products/sb-core1.png",
-    "Type": "Boards",
-    "Brand": "NetCore",
-    "QuantityInStock": 3
-  },
-  {
-    "Name": "Net Core Super Board",
-    "Description": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.",
-    "Price": 300,
-    "PictureUrl": "/images/products/sb-core2.png",
-    "Type": "Boards",
-    "Brand": "NetCore",
-    "QuantityInStock": 52
-  },
-  {
-    "Name": "React Board Super Whizzy Fast",
-    "Description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-    "Price": 250,
-    "PictureUrl": "/images/products/sb-react1.png",
-    "Type": "Boards",
-    "Brand": "React",
-    "QuantityInStock": 97
-  },
-  {
-    "Name": "Typescript Entry Board",
-    "Description": "Aenean nec lorem. In porttitor. Donec laoreet nonummy augue.",
-    "Price": 120,
-    "PictureUrl": "/images/products/sb-ts1.png",
-    "Type": "Boards",
-    "Brand": "Typescript",
-    "QuantityInStock": 37
-  },
-  {
-    "Name": "Core Blue Hat",
-    "Description": "Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-    "Price": 10,
-    "PictureUrl": "/images/products/hat-core1.png",
-    "Type": "Hats",
-    "Brand": "NetCore",
-    "QuantityInStock": 32
-  },
-  {
-    "Name": "Green React Woolen Hat",
-    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
-    "Price": 8,
-    "PictureUrl": "/images/products/hat-react1.png",
-    "Type": "Hats",
-    "Brand": "React",
-    "QuantityInStock": 6
-  },
-  {
-    "Name": "Purple React Woolen Hat",
-    "Description": "Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-    "Price": 15,
-    "PictureUrl": "/images/products/hat-react2.png",
-    "Type": "Hats",
-    "Brand": "React",
-    "QuantityInStock": 17
-  },
-  {
-    "Name": "Blue Code Gloves",
-    "Description": "Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.",
-    "Price": 18,
-    "PictureUrl": "/images/products/glove-code1.png",
-    "Type": "Gloves",
-    "Brand": "VS Code",
-    "QuantityInStock": 74
-  },
-  {
-    "Name": "Green Code Gloves",
-    "Description": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.",
-    "Price": 15,
-    "PictureUrl": "/images/products/glove-code2.png",
-    "Type": "Gloves",
-    "Brand": "VS Code",
-    "QuantityInStock": 19
-  },
-  {
-    "Name": "Purple React Gloves",
-    "Description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa.",
-    "Price": 16,
-    "PictureUrl": "/images/products/glove-react1.png",
-    "Type": "Gloves",
-    "Brand": "React",
-    "QuantityInStock": 77
-  },
-  {
-    "Name": "Green React Gloves",
-    "Description": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.",
-    "Price": 14,
-    "PictureUrl": "/images/products/glove-react2.png",
-    "Type": "Gloves",
-    "Brand": "React",
+    "Name": "AeroFlex Trail Runner X",
+    "Description": "Durable trail running shoes designed for outdoor activities with enhanced grip and stability.",
+    "Price": 329.99,
+    "PictureUrl": "/images/products/shoes-aeroflex2.png",
+    "Type": "Running Shoes",
+    "Brand": "AeroFlex",
     "QuantityInStock": 45
   },
   {
-    "Name": "Redis Red Boots",
-    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
-    "Price": 250,
-    "PictureUrl": "/images/products/boot-redis1.png",
-    "Type": "Boots",
-    "Brand": "Redis",
-    "QuantityInStock": 49
+    "Name": "Vortan Elite Training Shirt",
+    "Description": "Breathable sports shirt designed for gym sessions, running, and intense training activities.",
+    "Price": 59.99,
+    "PictureUrl": "/images/products/shirt-vortan1.png",
+    "Type": "Sports Clothing",
+    "Brand": "Vortan",
+    "QuantityInStock": 120
   },
   {
-    "Name": "Core Red Boots",
-    "Description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-    "Price": 189.99,
-    "PictureUrl": "/images/products/boot-core2.png",
-    "Type": "Boots",
-    "Brand": "NetCore",
-    "QuantityInStock": 28
+    "Name": "Vortan Performance Shorts",
+    "Description": "Comfortable athletic shorts with flexible fabric suitable for multiple sports activities.",
+    "Price": 79.99,
+    "PictureUrl": "/images/products/short-vortan1.png",
+    "Type": "Sports Clothing",
+    "Brand": "Vortan",
+    "QuantityInStock": 75
   },
   {
-    "Name": "Core Purple Boots",
-    "Description": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.",
+    "Name": "Montara Active Backpack",
+    "Description": "Compact sports backpack designed for gym sessions, cycling, and outdoor adventures.",
+    "Price": 139.99,
+    "PictureUrl": "/images/products/backpack-montara1.png",
+    "Type": "Accessories",
+    "Brand": "Montara",
+    "QuantityInStock": 52
+  },
+  {
+    "Name": "Montara Fitness Gloves",
+    "Description": "Training gloves with protection and improved grip for strength workouts.",
+    "Price": 39.99,
+    "PictureUrl": "/images/products/gloves-montara1.png",
+    "Type": "Fitness Gear",
+    "Brand": "Montara",
+    "QuantityInStock": 97
+  },
+  {
+    "Name": "Zentrix Pro Football",
+    "Description": "Professional football designed for matches and training sessions with excellent durability.",
+    "Price": 129.99,
+    "PictureUrl": "/images/products/football-zentrix1.png",
+    "Type": "Balls",
+    "Brand": "Zentrix",
+    "QuantityInStock": 38
+  },
+  {
+    "Name": "Zentrix Basketball Max",
+    "Description": "High-quality basketball with excellent grip, control, and long-lasting performance.",
+    "Price": 149.99,
+    "PictureUrl": "/images/products/basketball-zentrix1.png",
+    "Type": "Balls",
+    "Brand": "Zentrix",
+    "QuantityInStock": 41
+  },
+  {
+    "Name": "Lumora Smart Water Bottle",
+    "Description": "Durable sports water bottle designed for hydration during physical activities.",
+    "Price": 34.99,
+    "PictureUrl": "/images/products/bottle-lumora1.png",
+    "Type": "Accessories",
+    "Brand": "Lumora",
+    "QuantityInStock": 150
+  },
+  {
+    "Name": "Lumora Yoga Mat Comfort",
+    "Description": "Non-slip yoga mat designed for workouts, stretching, and flexibility exercises.",
+    "Price": 89.99,
+    "PictureUrl": "/images/products/yoga-lumora1.png",
+    "Type": "Fitness Gear",
+    "Brand": "Lumora",
+    "QuantityInStock": 64
+  },
+  {
+    "Name": "Rivanta Cycling Helmet",
+    "Description": "Lightweight cycling helmet with reinforced protection and comfortable fit.",
     "Price": 199.99,
-    "PictureUrl": "/images/products/boot-core1.png",
-    "Type": "Boots",
-    "Brand": "NetCore",
-    "QuantityInStock": 69
+    "PictureUrl": "/images/products/helmet-rivanta1.png",
+    "Type": "Cycling Gear",
+    "Brand": "Rivanta",
+    "QuantityInStock": 29
   },
   {
-    "Name": "Angular Purple Boots",
-    "Description": "Aenean nec lorem. In porttitor. Donec laoreet nonummy augue.",
-    "Price": 150,
-    "PictureUrl": "/images/products/boot-ang2.png",
-    "Type": "Boots",
-    "Brand": "Angular",
-    "QuantityInStock": 35
+    "Name": "Rivanta Mountain Bike Gloves",
+    "Description": "Cycling gloves designed for comfort, protection, and improved handlebar control.",
+    "Price": 44.99,
+    "PictureUrl": "/images/products/cycling-gloves-rivanta1.png",
+    "Type": "Cycling Gear",
+    "Brand": "Rivanta",
+    "QuantityInStock": 56
   },
   {
-    "Name": "Angular Blue Boots",
-    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
-    "Price": 180,
-    "PictureUrl": "/images/products/boot-ang1.png",
-    "Type": "Boots",
-    "Brand": "Angular",
-    "QuantityInStock": 27
+    "Name": "FalconPeak Training Jacket",
+    "Description": "Sports jacket designed for outdoor workouts in different weather conditions.",
+    "Price": 189.99,
+    "PictureUrl": "/images/products/jacket-falconpeak1.png",
+    "Type": "Sports Clothing",
+    "Brand": "FalconPeak",
+    "QuantityInStock": 33
+  },
+  {
+    "Name": "FalconPeak Tennis Racket",
+    "Description": "Balanced tennis racket suitable for beginner and advanced players.",
+    "Price": 279.99,
+    "PictureUrl": "/images/products/racket-falconpeak1.png",
+    "Type": "Rackets",
+    "Brand": "FalconPeak",
+    "QuantityInStock": 18
+  },
+  {
+    "Name": "Nexora Resistance Bands Kit",
+    "Description": "Resistance band kit designed for strength training and mobility exercises.",
+    "Price": 49.99,
+    "PictureUrl": "/images/products/bands-nexora1.png",
+    "Type": "Fitness Gear",
+    "Brand": "Nexora",
+    "QuantityInStock": 88
+  },
+  {
+    "Name": "Nexora Sports Cap",
+    "Description": "Lightweight sports cap with sun protection for outdoor activities.",
+    "Price": 29.99,
+    "PictureUrl": "/images/products/cap-nexora1.png",
+    "Type": "Accessories",
+    "Brand": "Nexora",
+    "QuantityInStock": 72
+  },
+  {
+    "Name": "Orvex Pro Swim Goggles",
+    "Description": "Swimming goggles with comfortable adjustment and wide field of vision.",
+    "Price": 69.99,
+    "PictureUrl": "/images/products/swim-orvex1.png",
+    "Type": "Swimming Gear",
+    "Brand": "Orvex",
+    "QuantityInStock": 47
+  },
+  {
+    "Name": "Orvex Sports Towel",
+    "Description": "Quick-drying sports towel designed for gyms and athletic activities.",
+    "Price": 24.99,
+    "PictureUrl": "/images/products/towel-orvex1.png",
+    "Type": "Accessories",
+    "Brand": "Orvex",
+    "QuantityInStock": 105
   }
 ]

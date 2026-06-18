@@ -14,6 +14,8 @@ namespace API.DTOs
         public decimal ShippingPrice { get; set; }
         public required List<OrderItemDto> OrderItems { get; set; }
         public decimal Subtotal { get; set; }
+        public decimal DiscountPercent { get; set; }
+        public decimal DiscountAmount { get; set; }
         public required string Status { get; set; }
         public decimal Total { get; set; }
         public required string PaymentIntentId { get; set; }
