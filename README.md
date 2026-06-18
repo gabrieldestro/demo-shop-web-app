@@ -150,8 +150,6 @@ dotnet user-secrets set "StripeSettings:PublishableKey" "pk_live_..." --project 
 dotnet user-secrets set "StripeSettings:whSecret" "whsec_..." --project API
 ```
 
-> The project's UserSecretsId is `29fd337c-45c1-4b20-9e44-d4501670aa5e`.
-
 ### Angular Environment
 
 Development environment file: `client/src/environments/environment.development.ts`

@@ -84,6 +84,18 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
         return BadRequest("Problem deleting the product");
     }
 
+    [HttpGet("stocks")]
+    public async Task<ActionResult<Dictionary<int, int>>> GetStocks([FromQuery] List<int> ids)
+    {
+        var stocks = new Dictionary<int, int>();
+        foreach (var id in ids)
+        {
+            var product = await unit.Repository<Product>().GetByIdAsync(id);
+            stocks[id] = product?.QuantityInStock ?? 0;
+        }
+        return Ok(stocks);
+    }
+
     [Cached(100000)]
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()

@@ -2,7 +2,6 @@ import { Component, inject, Input } from '@angular/core';
 import { Product } from '../../../shared/models/product';
 import { MatIcon } from '@angular/material/icon';
 import { CurrencyPipe } from '@angular/common';
-import { MatButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -11,7 +10,6 @@ import { CartService } from '../../../core/services/cart.service';
   imports: [
     MatIcon,
     CurrencyPipe,
-    MatButton,
     RouterLink
   ],
   templateUrl: './product-item.component.html',
@@ -20,4 +18,12 @@ import { CartService } from '../../../core/services/cart.service';
 export class ProductItemComponent {
  @Input() product?: Product;
  cartService = inject(CartService)
+
+ cartQty(productId: number): number {
+   return this.cartService.cart()?.items.find(i => i.productId === productId)?.quantity ?? 0;
+ }
+
+ canAddToCart(product: Product): boolean {
+   return product.quantityInStock > 0 && this.cartQty(product.id) < product.quantityInStock;
+ }
 }

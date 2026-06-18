@@ -33,6 +33,9 @@
     <button
       mat-icon-button
       (click)="decrementQuantity()"
+      [disabled]="isLastItem()"
+      [class.opacity-30]="isLastItem()"
+      [class.cursor-not-allowed]="isLastItem()"
       class="!w-8 !h-8 !min-w-0 rounded-full border border-gray-200 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-all duration-200 flex items-center justify-center">
       <mat-icon class="!text-base text-gray-600">remove</mat-icon>
     </button>
@@ -42,6 +45,9 @@
     <button
       mat-icon-button
       (click)="incrementQuantity()"
+      [disabled]="atMaxStock()"
+      [class.opacity-30]="atMaxStock()"
+      [class.cursor-not-allowed]="atMaxStock()"
       class="!w-8 !h-8 !min-w-0 rounded-full border border-gray-200 bg-gray-50 hover:bg-orange-50 hover:border-orange-300 transition-all duration-200 flex items-center justify-center">
       <mat-icon class="!text-base text-gray-600">add</mat-icon>
     </button>

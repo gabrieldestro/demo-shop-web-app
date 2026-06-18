@@ -32,4 +32,12 @@ export class CartItemComponent {
   removeItemFromCart() {
     this.cartService.removeItemFromCart(this.item().productId, this.item().quantity);
   }
+
+  atMaxStock() {
+    return this.item().quantity >= this.item().quantityInStock;
+  }
+
+  isLastItem() {
+    return this.item().quantity === 1;
+  }
 }

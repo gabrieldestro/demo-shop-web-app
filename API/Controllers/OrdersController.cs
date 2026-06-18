@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Extensions;
+using API.RequestHelpers;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
@@ -13,6 +14,7 @@ namespace API.Controllers
     [Authorize]
     public class OrdersController(ICartService cartService, IUnitOfWork unit, IConfiguration config) : BaseApiController
     {
+        [InvalidateCache("api/products|")]
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderDto orderDto)
         {
@@ -25,12 +27,19 @@ namespace API.Controllers
             if (cart.PaymentIntentId == null) return BadRequest("No payment intent for this order");
 
             var items = new List<OrderItem>();
+            var errors = new List<string>();
 
             foreach (var item in cart.Items)
             {
                 var productItem = await unit.Repository<Product>().GetByIdAsync(item.ProductId);
 
                 if (productItem == null) return BadRequest("Problem with the order");
+
+                if (productItem.QuantityInStock < item.Quantity)
+                {
+                    errors.Add($"Insufficient stock for {productItem.Name}. Available: {productItem.QuantityInStock}, requested: {item.Quantity}");
+                    continue;
+                }
 
                 var itemOrdered = new ProductItemOrdered
                 {
@@ -47,6 +56,8 @@ namespace API.Controllers
                 };
                 items.Add(orderItem);
             }
+
+            if (errors.Count > 0) return BadRequest(string.Join("; ", errors));
 
             var deliveryMethod = await unit.Repository<DeliveryMethod>().GetByIdAsync(orderDto.DeliveryMethodId);
 
@@ -68,6 +79,17 @@ namespace API.Controllers
 
             if (await unit.Complete())
             {
+                foreach (var orderItem in order.OrderItems)
+                {
+                    var productItem = await unit.Repository<Product>().GetByIdAsync(orderItem.ItemOrdered.ProductId);
+                    if (productItem != null)
+                    {
+                        productItem.QuantityInStock -= orderItem.Quantity;
+                        unit.Repository<Product>().Update(productItem);
+                    }
+                }
+                await unit.Complete();
+
                 return order;
             }
 

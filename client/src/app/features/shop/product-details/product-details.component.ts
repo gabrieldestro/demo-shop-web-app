@@ -54,8 +54,11 @@ export class ProductDetailsComponent implements OnInit {
 
   updateCart() {
     if (!this.product) return;
+    if (this.quantity > this.product.quantityInStock) return;
+
     if (this.quantity > this.quantityInCart) {
       const itemsToAdd = this.quantity - this.quantityInCart;
+      if (itemsToAdd > this.product.quantityInStock - this.quantityInCart) return;
       this.quantityInCart += itemsToAdd;
       this.cartService.addItemToCart(this.product, itemsToAdd);
     } else {

@@ -1,6 +1,8 @@
 ﻿using System;
 using API.DTOs;
 using API.Extensions;
+using API.RequestHelpers;
+using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
@@ -57,5 +59,27 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         }
 
         return BadRequest("Problem refunding order");
+    }
+
+    [HttpGet("products")]
+    public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
+    {
+        var products = await unit.Repository<Product>().ListAllAsync();
+        return Ok(products);
+    }
+
+    [InvalidateCache("api/products|")]
+    [HttpPut("products/{id:int}/stock")]
+    public async Task<ActionResult> UpdateProductStock(int id, UpdateStockDto dto)
+    {
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
+        if (product == null) return NotFound();
+
+        product.QuantityInStock = dto.QuantityInStock;
+        unit.Repository<Product>().Update(product);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Problem updating stock");
     }
 }

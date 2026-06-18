@@ -1,11 +1,6 @@
 <section class="bg-gray-50 min-h-screen">
   <div class="max-w-screen-2xl mx-auto px-4 py-8">
 
-    <!-- Page Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-extrabold text-gray-900">Admin Panel</h1>
-    </div>
-
     <mat-tab-group class="[&_.mdc-tab__text-label]:font-semibold [&_.mdc-tab-indicator__content--underline]:!border-orange-500 [&_.mdc-tab--active_.mdc-tab__text-label]:!text-orange-500">
 
       <!-- Orders Tab -->
@@ -100,33 +95,162 @@
               [length]="totalItems"
               [pageSize]="orderParams.pageSize"
               showFirstLastButtons
-              (page)="onPageChange($event)"
-            />
+              (page)="onPageChange($event)">
+            </mat-paginator>
           </div>
         </div>
       </mat-tab>
 
-      <!-- Catalog Tab -->
-      <mat-tab label="Catalog">
+      <!-- Stock Tab -->
+      <mat-tab label="Stock">
         <div class="mt-6">
-          <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
-            <div class="flex flex-col items-center justify-center py-16 px-4">
-              <mat-icon class="!text-5xl !w-12 !h-12 text-gray-300 mb-4">inventory_2</mat-icon>
-              <p class="text-lg font-semibold text-gray-900 mb-1">Catalog Management</p>
-              <p class="text-sm text-gray-500">Coming soon</p>
+
+          <!-- Header with stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                <mat-icon class="!text-xl text-orange-500">inventory_2</mat-icon>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Total Products</p>
+                <p class="text-xl font-extrabold text-gray-900">{{totalProducts}}</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                <mat-icon class="!text-xl text-red-500">report_problem</mat-icon>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Out of Stock</p>
+                <p class="text-xl font-extrabold text-red-500">{{outOfStockCount}}</p>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                <mat-icon class="!text-xl text-yellow-600">warning_amber</mat-icon>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Low Stock (≤5)</p>
+                <p class="text-xl font-extrabold text-yellow-600">{{lowStockCount}}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </mat-tab>
 
-      <!-- Other Tab -->
-      <mat-tab label="Other">
-        <div class="mt-6">
+          <!-- Search -->
+          <div class="mb-4">
+            <div class="relative max-w-md">
+              <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 !text-lg text-gray-400">search</mat-icon>
+              <input type="text" placeholder="Search by name, brand or type..."
+                  [ngModel]="stockSearchQuery" (ngModelChange)="onSearchChange($event)"
+                  class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200">
+            </div>
+          </div>
+
+          <!-- Products Table Card -->
           <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
-            <div class="flex flex-col items-center justify-center py-16 px-4">
-              <mat-icon class="!text-5xl !w-12 !h-12 text-gray-300 mb-4">support_agent</mat-icon>
-              <p class="text-lg font-semibold text-gray-900 mb-1">Customer Service</p>
-              <p class="text-sm text-gray-500">Coming soon</p>
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="filteredProducts" class="w-full">
+
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">#</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3 text-sm font-semibold text-gray-900">{{product.id}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Product</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
+                        <img src="{{product.pictureUrl}}" class="w-full h-full object-cover">
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 truncate">{{product.name}}</p>
+                        <p class="text-xs text-gray-400">{{product.brand}} · {{product.type}}</p>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Status</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3">
+                    @if (product.quantityInStock === 0) {
+                      <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        Out of Stock
+                      </span>
+                    } @else if (product.quantityInStock <= 5) {
+                      <span class="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                        Low Stock
+                      </span>
+                    } @else {
+                      <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        In Stock
+                      </span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="stock">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Stock</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3">
+                    @if (editingStockId === product.id) {
+                      <div class="flex items-center gap-2">
+                        <input type="number" min="0" [(ngModel)]="editingStockValue"
+                            class="w-20 px-2 py-1.5 border-2 border-orange-500 rounded-lg text-sm font-bold text-gray-900 text-center focus:outline-none focus:ring-2 focus:ring-orange-500/30">
+                        <button mat-icon-button (click)="saveStock(product)" matTooltip="Save"
+                            class="!w-7 !h-7 text-green-500 hover:text-green-600 transition-colors">
+                          <mat-icon class="!text-lg">check_circle</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="cancelEditStock()" matTooltip="Cancel"
+                            class="!w-7 !h-7 text-gray-400 hover:text-red-500 transition-colors">
+                          <mat-icon class="!text-lg">cancel</mat-icon>
+                        </button>
+                      </div>
+                    } @else {
+                      <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
+                          <span class="text-sm font-bold"
+                              [class.text-red-500]="product.quantityInStock === 0"
+                              [class.text-yellow-600]="product.quantityInStock > 0 && product.quantityInStock <= 5"
+                              [class.text-green-600]="product.quantityInStock > 5">
+                            {{product.quantityInStock}}
+                          </span>
+                          <div class="w-16 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-300"
+                                [style.width.%]="product.quantityInStock > 100 ? 100 : (product.quantityInStock / 100) * 100"
+                                [class.bg-red-500]="product.quantityInStock === 0"
+                                [class.bg-yellow-500]="product.quantityInStock > 0 && product.quantityInStock <= 5"
+                                [class.bg-green-500]="product.quantityInStock > 5">
+                            </div>
+                          </div>
+                        </div>
+                        <button mat-icon-button (click)="startEditStock(product)" matTooltip="Edit stock"
+                            class="!w-6 !h-6 text-gray-300 hover:text-orange-500 transition-colors">
+                          <mat-icon class="!text-base">edit</mat-icon>
+                        </button>
+                      </div>
+                    }
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['id', 'name', 'status', 'stock']" class="border-b border-gray-100"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'status', 'stock'];"
+                    class="border-b border-gray-100 hover:bg-orange-50 transition-colors duration-200"></tr>
+
+                @if (filteredProducts.length === 0) {
+                  <tr>
+                    <td colspan="4" class="px-4 py-12 text-center">
+                      <mat-icon class="!text-4xl !w-10 !h-10 text-gray-300 mb-2">search_off</mat-icon>
+                      <p class="text-gray-500 text-sm">No products match your search</p>
+                    </td>
+                  </tr>
+                }
+              </table>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { OrderParams } from '../../shared/models/orderParams';
 import { Order } from '../../shared/models/order';
 import { Pagination } from '../../shared/models/pagination';
+import { Product } from '../../shared/models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,13 @@ export class AdminService {
 
   refundOrder(id: number) {
     return this.http.post<Order>(this.baseUrl + 'admin/orders/refund/' + id, {});
+  }
+
+  getProducts() {
+    return this.http.get<Product[]>(this.baseUrl + 'admin/products');
+  }
+
+  updateProductStock(id: number, quantityInStock: number) {
+    return this.http.put(this.baseUrl + 'admin/products/' + id + '/stock', { quantityInStock });
   }
 }

@@ -77,12 +77,20 @@
   ));
 }
 
+.snack-error .mdc-snackbar__surface {
+  background-color: red !important;
+}
+
 .snack-success {
   @include mat.snack-bar-overrides((
     button-color: white,
-    container-color: green,
+    container-color: #22c55e,
     supporting-text-color: white
   ));
+}
+
+.snack-success .mdc-snackbar__surface {
+  background-color: #22c55e !important;
 }
 
 .mat-mdc-menu-panel,

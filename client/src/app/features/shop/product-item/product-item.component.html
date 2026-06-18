@@ -7,6 +7,13 @@
     <span class="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold uppercase px-2 py-0.5 rounded-full">
       {{product.type}}
     </span>
+    @if (product.quantityInStock === 0) {
+      <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+        <span class="bg-red-500 text-white text-sm font-bold uppercase px-4 py-1.5 rounded-full">
+          Out of Stock
+        </span>
+      </div>
+    }
   </div>
 
   <!-- Content -->
@@ -16,7 +23,14 @@
     <p class="text-orange-500 font-extrabold text-lg mb-3">{{product.price | currency}}</p>
 
     <button (click)="$event.stopPropagation(); cartService.addItemToCart(product)" 
-      class="w-full flex items-center justify-center gap-2 bg-black text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-orange-500 transition-colors duration-200">
+      class="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2.5 rounded-xl transition-all duration-200"
+      [class.bg-black]="canAddToCart(product)"
+      [class.text-white]="canAddToCart(product)"
+      [class.hover:bg-orange-500]="canAddToCart(product)"
+      [class.bg-gray-200]="!canAddToCart(product)"
+      [class.text-gray-400]="!canAddToCart(product)"
+      [class.cursor-not-allowed]="!canAddToCart(product)"
+      [disabled]="!canAddToCart(product)">
       <mat-icon class="text-base">add_shopping_cart</mat-icon>
       Add to cart
     </button>

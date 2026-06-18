@@ -5,6 +5,7 @@ import { Cart, CartItem } from '../../shared/models/cart';
 import { Product } from '../../shared/models/product';
 import { map } from 'rxjs';
 import { DeliveryMethod } from '../../shared/models/deliveryMethod';
+import { SnackbarService } from './snackbar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ import { DeliveryMethod } from '../../shared/models/deliveryMethod';
 export class CartService {
   baseUrl = environment.baseUrl;
   private http = inject(HttpClient)
+  private snackbar = inject(SnackbarService);
   cart = signal<Cart | null>(null);
   itemCount = computed(() => {
     return this.cart()?.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -36,9 +38,28 @@ export class CartService {
     return this.http.get<Cart>(this.baseUrl + 'cart?id=' + id).pipe(
       map(cart => {
         this.cart.set(cart);
+        this.refreshCartStock();
         return cart;
       })
     )
+  }
+
+  private refreshCartStock() {
+    const cart = this.cart();
+    if (!cart || cart.items.length === 0) return;
+    const ids = cart.items.map(i => i.productId);
+    this.http.get<Record<number, number>>(this.baseUrl + 'products/stocks', {
+      params: { ids }
+    }).subscribe({
+      next: stocks => {
+        cart.items.forEach(item => {
+          if (stocks[item.productId] !== undefined) {
+            item.quantityInStock = stocks[item.productId];
+          }
+        });
+        this.cart.set(cart);
+      }
+    });
   }
 
   setCart(cart: Cart) {
@@ -51,6 +72,12 @@ export class CartService {
     const cart = this.cart() ?? this.createCart();
     if (this.isProduct(item)) {
       item = this.mapProductToCartItem(item);
+    }
+    const existing = cart.items.find(i => i.productId === item.productId);
+    const currentQty = existing ? existing.quantity : 0;
+    if (currentQty + quantity > item.quantityInStock) {
+      this.snackbar.error(`Only ${item.quantityInStock} available in stock`);
+      return;
     }
     cart.items = this.addOrUpdateItem(cart.items, item, quantity);
     this.setCart(cart);
@@ -102,7 +129,8 @@ export class CartService {
       quantity: 0,
       pictureUrl: product.pictureUrl,
       brand: product.brand,
-      type: product.type
+      type: product.type,
+      quantityInStock: product.quantityInStock
     };
   }
 
