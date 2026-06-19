@@ -56,32 +56,14 @@ export class AdminService {
     return this.http.put(this.baseUrl + 'admin/products/' + id + '/stock', { quantityInStock });
   }
 
-  // ─── Brands ───────────────────────────────────────
+  // ─── Brands / Types ──────────────────────────────
 
   getBrands() {
     return this.http.get<string[]>(this.baseUrl + 'admin/brands');
   }
 
-  addBrand(name: string) {
-    return this.http.post(this.baseUrl + 'admin/brands', { name });
-  }
-
-  deleteBrand(name: string) {
-    return this.http.delete(this.baseUrl + 'admin/brands/' + encodeURIComponent(name));
-  }
-
-  // ─── Types ────────────────────────────────────────
-
   getTypes() {
     return this.http.get<string[]>(this.baseUrl + 'admin/types');
-  }
-
-  addType(name: string) {
-    return this.http.post(this.baseUrl + 'admin/types', { name });
-  }
-
-  deleteType(name: string) {
-    return this.http.delete(this.baseUrl + 'admin/types/' + encodeURIComponent(name));
   }
 
   // ─── Image Upload ─────────────────────────────────

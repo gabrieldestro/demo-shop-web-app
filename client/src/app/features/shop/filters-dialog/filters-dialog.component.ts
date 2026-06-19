@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { ShopService } from '../../../core/services/shop.service';
 import {MatDivider} from '@angular/material/divider';
 import {MatListOption, MatSelectionList} from '@angular/material/list';
 import { MatButton } from '@angular/material/button';
@@ -20,8 +19,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class FiltersDialogComponent {
   private dialogRef = inject(MatDialogRef<FiltersDialogComponent>);
-  data = inject(MAT_DIALOG_DATA);
-  shopService = inject(ShopService);
+  data = inject<{selectedBrands: string[], selectedTypes: string[], brands: string[], types: string[]}>(MAT_DIALOG_DATA);
 
   selectedBrands: string[] = this.data.selectedBrands;
   selectedTypes: string[] = this.data.selectedTypes;

@@ -35,6 +35,8 @@ export class ShopComponent implements OnInit {
   private shopService = inject(ShopService);
   private dialogService = inject(MatDialog)
   products?: Pagination<Product>;
+  brands: string[] = [];
+  types: string[] = [];
   sortOptions = [
     { name: 'Alphabetical', value: 'name' },
     { name: 'Price: Low-High', value: 'priceAsc' },
@@ -49,8 +51,12 @@ export class ShopComponent implements OnInit {
   }
 
   initialiseShop() {
-    this.shopService.getTypes();
-    this.shopService.getBrands();
+    this.shopService.getBrands().subscribe({
+      next: brands => this.brands = brands
+    });
+    this.shopService.getTypes().subscribe({
+      next: types => this.types = types
+    });
     this.getProducts();
   }
 
@@ -88,7 +94,9 @@ export class ShopComponent implements OnInit {
       minWidth: '500px',
       data: {
         selectedBrands: this.shopParams.brands,
-        selectedTypes: this.shopParams.types
+        selectedTypes: this.shopParams.types,
+        brands: this.brands,
+        types: this.types
       }
     });
     dialogRef.afterClosed().subscribe({

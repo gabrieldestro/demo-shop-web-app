@@ -71,7 +71,7 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return Ok(products);
     }
 
-    [InvalidateCache("api/products|")]
+    [InvalidateCache("api/products")]
     [HttpPost("products")]
     public async Task<ActionResult<Product>> CreateProduct(CreateProductDto dto)
     {
@@ -96,7 +96,7 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return BadRequest("Problem creating product");
     }
 
-    [InvalidateCache("api/products|")]
+    [InvalidateCache("api/products")]
     [HttpPut("products/{id:int}")]
     public async Task<ActionResult> UpdateProduct(int id, UpdateProductDto dto)
     {
@@ -118,7 +118,7 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return BadRequest("Problem updating product");
     }
 
-    [InvalidateCache("api/products|")]
+    [InvalidateCache("api/products")]
     [HttpDelete("products/{id:int}")]
     public async Task<ActionResult> DeleteProduct(int id)
     {
@@ -132,7 +132,7 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return BadRequest("Problem deleting product");
     }
 
-    [InvalidateCache("api/products|")]
+    [InvalidateCache("api/products")]
     [HttpPut("products/{id:int}/stock")]
     public async Task<ActionResult> UpdateProductStock(int id, UpdateStockDto dto)
     {
@@ -147,7 +147,7 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return BadRequest("Problem updating stock");
     }
 
-    // ─── Brands ──────────────────────────────────────────
+    // ─── Brands / Types ─────────────────────────────
 
     [HttpGet("brands")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
@@ -156,67 +156,11 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return Ok(await unit.Repository<Product>().ListAsync(spec));
     }
 
-    [HttpPost("brands")]
-    public async Task<ActionResult> AddBrand(AddBrandDto dto)
-    {
-        var name = dto.Name.Trim();
-        if (string.IsNullOrEmpty(name))
-            return BadRequest("Brand name is required");
-
-        var spec = new BrandListSpecification();
-        var existing = await unit.Repository<Product>().ListAsync(spec);
-        if (existing.Contains(name, StringComparer.OrdinalIgnoreCase))
-            return BadRequest("Brand already exists");
-
-        return NoContent();
-    }
-
-    [HttpDelete("brands/{name}")]
-    public async Task<ActionResult> DeleteBrand(string name)
-    {
-        var spec = new ProductSpecification(new ProductSpecParams { Brands = [name] });
-        var count = await unit.Repository<Product>().CountAsync(spec);
-
-        if (count > 0)
-            return BadRequest($"Cannot delete brand '{name}': {count} product(s) are using it");
-
-        return NoContent();
-    }
-
-    // ─── Types ───────────────────────────────────────────
-
     [HttpGet("types")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
     {
         var spec = new TypeListSpecification();
         return Ok(await unit.Repository<Product>().ListAsync(spec));
-    }
-
-    [HttpPost("types")]
-    public async Task<ActionResult> AddType(AddTypeDto dto)
-    {
-        var name = dto.Name.Trim();
-        if (string.IsNullOrEmpty(name))
-            return BadRequest("Type name is required");
-
-        var spec = new TypeListSpecification();
-        var existing = await unit.Repository<Product>().ListAsync(spec);
-        if (existing.Contains(name, StringComparer.OrdinalIgnoreCase))
-            return BadRequest("Type already exists");
-
-        return NoContent();
-    }
-
-    [HttpDelete("types/{name}")]
-    public async Task<ActionResult> DeleteType(string name)
-    {
-        var spec = new ProductSpecification(new ProductSpecParams { Types = [name] });
-        var count = await unit.Repository<Product>().CountAsync(spec);
-
-        if (count > 0)
-            return BadRequest($"Cannot delete type '{name}': {count} product(s) are using it");
-
-        return NoContent();
     }
 
     // ─── Image Upload ────────────────────────────────────
