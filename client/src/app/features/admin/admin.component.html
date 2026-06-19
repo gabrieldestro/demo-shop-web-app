@@ -101,40 +101,50 @@
         </div>
       </mat-tab>
 
-      <!-- Stock Tab -->
-      <mat-tab label="Stock">
+      <!-- Catalog Tab -->
+      <mat-tab label="Catalog">
         <div class="mt-6">
 
-          <!-- Header with stats -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                <mat-icon class="!text-xl text-orange-500">inventory_2</mat-icon>
+          <!-- Header with stats and action buttons -->
+          <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+            <div class="flex gap-4">
+              <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                  <mat-icon class="!text-xl text-orange-500">inventory_2</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Total Products</p>
+                  <p class="text-xl font-extrabold text-gray-900">{{totalProducts}}</p>
+                </div>
               </div>
-              <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Total Products</p>
-                <p class="text-xl font-extrabold text-gray-900">{{totalProducts}}</p>
+
+              <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                  <mat-icon class="!text-xl text-red-500">report_problem</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Out of Stock</p>
+                  <p class="text-xl font-extrabold text-red-500">{{outOfStockCount}}</p>
+                </div>
+              </div>
+
+              <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                  <mat-icon class="!text-xl text-yellow-600">warning_amber</mat-icon>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Low Stock (≤5)</p>
+                  <p class="text-xl font-extrabold text-yellow-600">{{lowStockCount}}</p>
+                </div>
               </div>
             </div>
 
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
-                <mat-icon class="!text-xl text-red-500">report_problem</mat-icon>
-              </div>
-              <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Out of Stock</p>
-                <p class="text-xl font-extrabold text-red-500">{{outOfStockCount}}</p>
-              </div>
-            </div>
-
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <mat-icon class="!text-xl text-yellow-600">warning_amber</mat-icon>
-              </div>
-              <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-medium">Low Stock (≤5)</p>
-                <p class="text-xl font-extrabold text-yellow-600">{{lowStockCount}}</p>
-              </div>
+            <div class="flex gap-2">
+              <button mat-flat-button (click)="openProductDialog()"
+                  class="!rounded-xl !py-2 !px-4 !text-sm !font-bold !bg-orange-500 !text-white hover:!bg-orange-600 transition-colors duration-200 shadow-sm">
+                <mat-icon class="!text-lg !mr-1">add</mat-icon>
+                Add Product
+              </button>
             </div>
           </div>
 
@@ -143,36 +153,56 @@
             <div class="relative max-w-md">
               <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 !text-lg text-gray-400">search</mat-icon>
               <input type="text" placeholder="Search by name, brand or type..."
-                  [ngModel]="stockSearchQuery" (ngModelChange)="onSearchChange($event)"
+                  [ngModel]="catalogSearchQuery" (ngModelChange)="onSearchChange($event)"
                   class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200">
             </div>
           </div>
 
-          <!-- Products Table Card -->
+          <!-- Catalog Table Card -->
           <div class="rounded-2xl border border-gray-100 bg-white shadow-md overflow-hidden">
             <div class="overflow-x-auto">
               <table mat-table [dataSource]="filteredProducts" class="w-full">
 
-                <ng-container matColumnDef="id">
-                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">#</th>
-                  <td mat-cell *matCellDef="let product" class="px-4 py-3 text-sm font-semibold text-gray-900">{{product.id}}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Product</th>
+                <!-- Image Column -->
+                <ng-container matColumnDef="image">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Image</th>
                   <td mat-cell *matCellDef="let product" class="px-4 py-3">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 shrink-0">
-                        <img src="{{product.pictureUrl}}" class="w-full h-full object-cover">
-                      </div>
-                      <div class="min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 truncate">{{product.name}}</p>
-                        <p class="text-xs text-gray-400">{{product.brand}} · {{product.type}}</p>
-                      </div>
+                    <div class="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
+                      <img src="{{product.pictureUrl}}" class="w-full h-full object-cover">
                     </div>
                   </td>
                 </ng-container>
 
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Product</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3">
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-gray-900 truncate">{{product.name}}</p>
+                      <p class="text-xs text-gray-400">{{product.brand}} · {{product.type}}</p>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Price</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3 text-sm font-bold text-gray-900">{{product.price | currency}}</td>
+                </ng-container>
+
+                <!-- Brand Column -->
+                <ng-container matColumnDef="brand">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Brand</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3 text-sm text-gray-600">{{product.brand}}</td>
+                </ng-container>
+
+                <!-- Type Column -->
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Type</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3 text-sm text-gray-600">{{product.type}}</td>
+                </ng-container>
+
+                <!-- Status Column -->
                 <ng-container matColumnDef="status">
                   <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Status</th>
                   <td mat-cell *matCellDef="let product" class="px-4 py-3">
@@ -195,6 +225,7 @@
                   </td>
                 </ng-container>
 
+                <!-- Stock Column -->
                 <ng-container matColumnDef="stock">
                   <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Stock</th>
                   <td mat-cell *matCellDef="let product" class="px-4 py-3">
@@ -238,13 +269,30 @@
                   </td>
                 </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="['id', 'name', 'status', 'stock']" class="border-b border-gray-100"></tr>
-                <tr mat-row *matRowDef="let row; columns: ['id', 'name', 'status', 'stock'];"
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef class="bg-gray-50 text-gray-500 text-xs font-semibold uppercase tracking-wider px-4 py-3">Actions</th>
+                  <td mat-cell *matCellDef="let product" class="px-4 py-3">
+                    <div class="flex items-center gap-1">
+                      <button mat-icon-button (click)="openProductDialog(product)" matTooltip="Edit product"
+                          class="!w-8 !h-8 text-gray-400 hover:text-orange-500 transition-colors">
+                        <mat-icon class="!text-xl">edit</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="deleteProduct(product)" matTooltip="Delete product"
+                          class="!w-8 !h-8 text-gray-400 hover:text-red-500 transition-colors">
+                        <mat-icon class="!text-xl">delete</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['image', 'name', 'price', 'brand', 'type', 'status', 'stock', 'actions']" class="border-b border-gray-100"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['image', 'name', 'price', 'brand', 'type', 'status', 'stock', 'actions'];"
                     class="border-b border-gray-100 hover:bg-orange-50 transition-colors duration-200"></tr>
 
                 @if (filteredProducts.length === 0) {
                   <tr>
-                    <td colspan="4" class="px-4 py-12 text-center">
+                    <td colspan="8" class="px-4 py-12 text-center">
                       <mat-icon class="!text-4xl !w-10 !h-10 text-gray-300 mb-2">search_off</mat-icon>
                       <p class="text-gray-500 text-sm">No products match your search</p>
                     </td>

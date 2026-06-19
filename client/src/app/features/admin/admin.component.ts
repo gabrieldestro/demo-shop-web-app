@@ -18,6 +18,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProductDialogComponent } from './product-dialog/product-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -37,7 +39,8 @@ import { MatInputModule } from '@angular/material/input';
     PercentPipe,
     MatSlideToggleModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
@@ -46,6 +49,7 @@ export class AdminComponent implements OnInit {
   private adminService = inject(AdminService);
   private dialogService = inject(DialogService);
   private snackbar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
   displayedColumns: string[] = ['id', 'buyerEmail', 'orderDate', 'total', 'status', 'action'];
   dataSource = new MatTableDataSource<Order>([]);
   orderParams = new OrderParams();
@@ -56,7 +60,7 @@ export class AdminComponent implements OnInit {
   filteredProducts: Product[] = [];
   editingStockId: number | null = null;
   editingStockValue: number = 0;
-  stockSearchQuery = '';
+  catalogSearchQuery = '';
 
   get totalProducts() { return this.products.length; }
   get outOfStockCount() { return this.products.filter(p => p.quantityInStock === 0).length; }
@@ -129,7 +133,7 @@ export class AdminComponent implements OnInit {
   }
 
   onSearchChange(value: string): void {
-    this.stockSearchQuery = value;
+    this.catalogSearchQuery = value;
     const q = value.toLowerCase().trim();
     if (!q) {
       this.filteredProducts = [...this.products];
@@ -163,6 +167,39 @@ export class AdminComponent implements OnInit {
       }
     });
   }
+
+  // ─── Catalog ──────────────────────────────────────
+
+  openProductDialog(product?: Product) {
+    const ref = this.dialog.open(ProductDialogComponent, {
+      width: '600px',
+      data: { product }
+    });
+    ref.afterClosed().subscribe(result => {
+      if (result) this.loadProducts();
+    });
+  }
+
+  async deleteProduct(product: Product) {
+    const confirmed = await this.dialogService.confirm(
+      'Confirm delete',
+      `Are you sure you want to delete "${product.name}"? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    this.adminService.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.id !== product.id);
+        this.filteredProducts = this.filteredProducts.filter(p => p.id !== product.id);
+        this.snackbar.open('Product deleted', 'Close', { duration: 3000 });
+      },
+      error: err => {
+        this.snackbar.open(err.error?.title || 'Error deleting product', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  // ─── Coupons ──────────────────────────────────────
 
   loadCoupons(): void {
     this.adminService.getCoupons().subscribe({

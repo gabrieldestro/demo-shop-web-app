@@ -1,0 +1,78 @@
+<h2 mat-dialog-title class="!text-xl !font-extrabold !text-gray-900">
+  {{isEdit ? 'Edit' : 'Add'}} Product
+</h2>
+
+<mat-dialog-content class="!min-w-[480px]">
+  <div class="flex flex-col gap-4 py-4">
+
+    <!-- Image -->
+    <div>
+      <label class="text-sm font-medium text-gray-700 mb-1 block">Product Image</label>
+      <div class="flex items-center gap-4">
+        <button type="button" mat-stroked-button (click)="fileInput.click()" class="!rounded-xl">
+          <mat-icon class="!text-lg">upload</mat-icon> Choose File
+        </button>
+        <input #fileInput type="file" accept="image/png,image/jpeg,image/webp" (change)="onFileSelected($event)" class="hidden">
+        @if (imagePreview) {
+          <img [src]="imagePreview" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
+        }
+      </div>
+    </div>
+
+    <!-- Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="model.name" required>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="model.description" rows="3" required></textarea>
+    </mat-form-field>
+
+    <!-- Price -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Price</mat-label>
+      <input matInput type="number" min="0.01" step="0.01" [(ngModel)]="model.price" required>
+      <span matTextPrefix>$&nbsp;</span>
+    </mat-form-field>
+
+    <!-- Brand + Type side by side -->
+    <div class="flex gap-4">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Brand</mat-label>
+        <input matInput [(ngModel)]="model.brand" [matAutocomplete]="brandAutocomplete" required>
+        <mat-autocomplete #brandAutocomplete="matAutocomplete">
+          @for (brand of brands; track brand) {
+            <mat-option [value]="brand">{{brand}}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Type</mat-label>
+        <input matInput [(ngModel)]="model.type" [matAutocomplete]="typeAutocomplete" required>
+        <mat-autocomplete #typeAutocomplete="matAutocomplete">
+          @for (type of types; track type) {
+            <mat-option [value]="type">{{type}}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- Stock -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Quantity in Stock</mat-label>
+      <input matInput type="number" min="0" [(ngModel)]="model.quantityInStock" required>
+    </mat-form-field>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!px-6 !pb-4 !gap-2">
+  <button mat-button mat-dialog-close class="!rounded-xl">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="uploading" class="!rounded-xl !px-6">
+    {{uploading ? 'Saving...' : 'Save'}}
+  </button>
+</mat-dialog-actions>

@@ -1,5 +1,4 @@
-﻿using System;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Extensions;
 using API.RequestHelpers;
 using Core.Entities;
@@ -14,6 +13,8 @@ namespace API.Controllers;
 [Authorize(Roles = "Admin")]
 public class AdminController(IUnitOfWork unit, IPaymentService paymentService) : BaseApiController
 {
+    // ─── Orders ──────────────────────────────────────────
+
     [HttpGet("orders")]
     public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrders([FromQuery] OrderSpecParams specParams)
     {
@@ -61,11 +62,74 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
         return BadRequest("Problem refunding order");
     }
 
+    // ─── Products ────────────────────────────────────────
+
     [HttpGet("products")]
     public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
     {
         var products = await unit.Repository<Product>().ListAllAsync();
         return Ok(products);
+    }
+
+    [InvalidateCache("api/products|")]
+    [HttpPost("products")]
+    public async Task<ActionResult<Product>> CreateProduct(CreateProductDto dto)
+    {
+        var product = new Product
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            Price = dto.Price,
+            PictureUrl = dto.PictureUrl,
+            Type = dto.Type,
+            Brand = dto.Brand,
+            QuantityInStock = dto.QuantityInStock
+        };
+
+        unit.Repository<Product>().Add(product);
+
+        if (await unit.Complete())
+        {
+            return Ok(product);
+        }
+
+        return BadRequest("Problem creating product");
+    }
+
+    [InvalidateCache("api/products|")]
+    [HttpPut("products/{id:int}")]
+    public async Task<ActionResult> UpdateProduct(int id, UpdateProductDto dto)
+    {
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
+        if (product == null) return NotFound();
+
+        product.Name = dto.Name;
+        product.Description = dto.Description;
+        product.Price = dto.Price;
+        product.PictureUrl = dto.PictureUrl;
+        product.Type = dto.Type;
+        product.Brand = dto.Brand;
+        product.QuantityInStock = dto.QuantityInStock;
+
+        unit.Repository<Product>().Update(product);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Problem updating product");
+    }
+
+    [InvalidateCache("api/products|")]
+    [HttpDelete("products/{id:int}")]
+    public async Task<ActionResult> DeleteProduct(int id)
+    {
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
+        if (product == null) return NotFound();
+
+        unit.Repository<Product>().Remove(product);
+
+        if (await unit.Complete()) return NoContent();
+
+        return BadRequest("Problem deleting product");
     }
 
     [InvalidateCache("api/products|")]
@@ -82,6 +146,111 @@ public class AdminController(IUnitOfWork unit, IPaymentService paymentService) :
 
         return BadRequest("Problem updating stock");
     }
+
+    // ─── Brands ──────────────────────────────────────────
+
+    [HttpGet("brands")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
+    {
+        var spec = new BrandListSpecification();
+        return Ok(await unit.Repository<Product>().ListAsync(spec));
+    }
+
+    [HttpPost("brands")]
+    public async Task<ActionResult> AddBrand(AddBrandDto dto)
+    {
+        var name = dto.Name.Trim();
+        if (string.IsNullOrEmpty(name))
+            return BadRequest("Brand name is required");
+
+        var spec = new BrandListSpecification();
+        var existing = await unit.Repository<Product>().ListAsync(spec);
+        if (existing.Contains(name, StringComparer.OrdinalIgnoreCase))
+            return BadRequest("Brand already exists");
+
+        return NoContent();
+    }
+
+    [HttpDelete("brands/{name}")]
+    public async Task<ActionResult> DeleteBrand(string name)
+    {
+        var spec = new ProductSpecification(new ProductSpecParams { Brands = [name] });
+        var count = await unit.Repository<Product>().CountAsync(spec);
+
+        if (count > 0)
+            return BadRequest($"Cannot delete brand '{name}': {count} product(s) are using it");
+
+        return NoContent();
+    }
+
+    // ─── Types ───────────────────────────────────────────
+
+    [HttpGet("types")]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
+    {
+        var spec = new TypeListSpecification();
+        return Ok(await unit.Repository<Product>().ListAsync(spec));
+    }
+
+    [HttpPost("types")]
+    public async Task<ActionResult> AddType(AddTypeDto dto)
+    {
+        var name = dto.Name.Trim();
+        if (string.IsNullOrEmpty(name))
+            return BadRequest("Type name is required");
+
+        var spec = new TypeListSpecification();
+        var existing = await unit.Repository<Product>().ListAsync(spec);
+        if (existing.Contains(name, StringComparer.OrdinalIgnoreCase))
+            return BadRequest("Type already exists");
+
+        return NoContent();
+    }
+
+    [HttpDelete("types/{name}")]
+    public async Task<ActionResult> DeleteType(string name)
+    {
+        var spec = new ProductSpecification(new ProductSpecParams { Types = [name] });
+        var count = await unit.Repository<Product>().CountAsync(spec);
+
+        if (count > 0)
+            return BadRequest($"Cannot delete type '{name}': {count} product(s) are using it");
+
+        return NoContent();
+    }
+
+    // ─── Image Upload ────────────────────────────────────
+
+    [HttpPost("images/upload")]
+    public async Task<ActionResult<ImageUploadResult>> UploadImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file provided");
+
+        var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".webp" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+        if (!allowedExtensions.Contains(extension))
+            return BadRequest("Invalid file type. Allowed: png, jpg, jpeg, webp");
+
+        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+        Directory.CreateDirectory(uploadsDir);
+
+        var fileName = $"{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(uploadsDir, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        return Ok(new ImageUploadResult
+        {
+            Url = $"/images/products/{fileName}"
+        });
+    }
+
+    // ─── Coupons ─────────────────────────────────────────
 
     [HttpGet("coupons")]
     public async Task<ActionResult<IReadOnlyList<CouponDto>>> GetCoupons()

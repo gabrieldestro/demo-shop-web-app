@@ -518,3 +518,12 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Angular build output (keep images/)
+API/wwwroot/chunk-*.js
+API/wwwroot/main-*.js
+API/wwwroot/polyfills-*.js
+API/wwwroot/styles-*.css
+API/wwwroot/index.html
+API/wwwroot/3rdpartylicenses.txt
+API/wwwroot/prerendered-routes.json
